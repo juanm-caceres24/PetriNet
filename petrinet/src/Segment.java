@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Segment extends Thread {
+public class Segment implements Runnable {
 
     /*
      * VARIABLES

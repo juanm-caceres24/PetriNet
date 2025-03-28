@@ -11,6 +11,9 @@ public class Monitor implements MonitorInterface {
     // Indicates the state of the simulation: 'false'=stopped, 'true'=running
     private static Boolean simulationIsRunning;
 
+    // List of threads that are running the simulation
+    private static ArrayList<Thread> threads = new ArrayList<>();
+
     /*
      * CONSTRUCTORS
      */
@@ -29,16 +32,21 @@ public class Monitor implements MonitorInterface {
         Logger.setStartTime(System.currentTimeMillis());
         Logger.showStartSimulation(true);
 
+        // Create threads for each segment
+        for (Segment segment : PetriNet.getSegments()) {
+            threads.add(new Thread(segment));
+        }
+
         // Start simulation
         simulationIsRunning = true;
-        for (Segment segment : PetriNet.getSegments()) {
-            segment.start();
+        for (Thread thread : threads) {
+            thread.start();
         }
 
         // Wait for all segments to finish
-        for (Segment segment : PetriNet.getSegments()) {
+        for (Thread thread : threads) {
             try {
-                segment.join();
+                thread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -50,7 +58,7 @@ public class Monitor implements MonitorInterface {
 
     public static final void startManualMode() {
     
-        // Show start of manual mod
+        // Show start of manual mode
         Logger.setStartTime(System.currentTimeMillis());
         Logger.showStartSimulation(true);
 
