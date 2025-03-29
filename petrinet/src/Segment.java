@@ -33,6 +33,22 @@ public class Segment implements Runnable {
     
     @Override
     public void run() {
+        Transition conflictedInternalTransition = null;
+        ArrayList<Transition> conflictedExternalTransitions = new ArrayList<>();
+
+        // Search the transition that is in the segment and has the same input place as the segment
+        for (Transition transition : transitions) {
+            if (transition.getInputPlaces().contains(placeLimits[0])) {
+                conflictedInternalTransition = transition;
+            }
+        }
+
+        // Search all the others transitions of the others segments that have the same input place
+        for (Transition transition : PetriNet.getTransitions()) {
+            if (transition.getInputPlaces().contains(placeLimits[0]) && transition != conflictedInternalTransition) {
+                conflictedExternalTransitions.add(transition);
+            }
+        }
 
         // Fires possible transitions all the time while simulation is running
         while (Monitor.getSimulationIsRunning()) {
