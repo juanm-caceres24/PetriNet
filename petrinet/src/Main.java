@@ -36,7 +36,5 @@ public class Main {
         // Show end of the program
         System.out.println("                   >>> | Program successfully finished!");
         return;
-
-        // testing
     }
 }
