@@ -15,12 +15,12 @@ public class Main {
         Monitor.initializeMonitorr();
         
         // Selection and launching of simulation mode or manual mode
-        System.out.println("========================|");
-        System.out.println(" MODE SELECTION         |");
-        System.out.println("========================|");
+        System.out.println("=======================================|");
+        System.out.println(" MODE SELECTION                        |");
+        System.out.println("=======================================|");
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.print("                    >>> | Select mode ('0'=Simulation mode, '1'=Manual mode): ");
+            System.out.print("                                   >>> | Select mode ('0'=Simulation mode, '1'=Manual mode): ");
             String input = scanner.nextLine();
             if (input.equals("0")) {
                 Monitor.startSimulationMode();
@@ -29,13 +29,13 @@ public class Main {
                 Monitor.startManualMode();
                 break;
             } else {
-                System.out.println("                    >>> | ERROR: Invalid input.");
+                System.out.println("                                   >>> | ERROR: Invalid input.");
             }
         }
         scanner.close();
 
         // Show end of the program
-        System.out.println("                    >>> | Program successfully finished!");
+        System.out.println("                                   >>> | Program successfully finished!");
         return;
     }
 }
