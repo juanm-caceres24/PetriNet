@@ -20,7 +20,7 @@ public class Main {
         System.out.println("========================|");
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.print("                    >>> | Select mode ('0'=Simulation, '1'=Manual mode): ");
+            System.out.print("                    >>> | Select mode ('0'=Simulation mode, '1'=Manual mode): ");
             String input = scanner.nextLine();
             if (input.equals("0")) {
                 Monitor.startSimulationMode();
