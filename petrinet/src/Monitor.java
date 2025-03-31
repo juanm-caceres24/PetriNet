@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 public class Monitor implements MonitorInterface {
 
@@ -12,23 +11,26 @@ public class Monitor implements MonitorInterface {
     private static Boolean simulationIsRunning;
 
     // List of threads that are running the simulation
-    private static ArrayList<Thread> threads = new ArrayList<>();
+    private static ArrayList<Thread> threads;
 
     /*
      * CONSTRUCTORS
      */
 
-    private Monitor() {
-
-    }
+    private Monitor() { }
 
     /*
      * METHODS
      */
 
-    public static final void startSimulation() {
+    public static final void initializeMonitorr() {
+        simulationIsRunning = false;
+        threads = new ArrayList<>();
+    }
 
-        // Show start of simulation
+    public static final void startSimulationMode() {
+
+        // Show start of simulation mode
         Logger.setStartTime(System.currentTimeMillis());
         Logger.showStartSimulation(true);
 
@@ -37,7 +39,7 @@ public class Monitor implements MonitorInterface {
             threads.add(new Thread(segment));
         }
 
-        // Start simulation
+        // Start simulation mode
         simulationIsRunning = true;
         for (Thread thread : threads) {
             thread.start();
@@ -52,7 +54,7 @@ public class Monitor implements MonitorInterface {
             }
         }
 
-        // Show end of simulation
+        // Show end of simulation mode
         Logger.showEndSimulation(true);
     }
 
@@ -66,7 +68,7 @@ public class Monitor implements MonitorInterface {
         simulationIsRunning = true;
         Scanner scanner = new Scanner(System.in);
         while (simulationIsRunning) {
-            System.out.print("                   >>> | Enter transition ID to fire ('exit'=quit): ");
+            System.out.print("                    >>> | Enter transition ID to fire ('exit'=quit): ");
             String input = scanner.nextLine();
             if (input.equals("exit")) {
                 simulationIsRunning = false;
@@ -76,15 +78,15 @@ public class Monitor implements MonitorInterface {
                     Integer transitionId = Integer.parseInt(input);
                     if (PetriNet.getTransitions().get(transitionId).canFire()) {
                         PetriNet.getTransitions().get(transitionId).fireTransition();
-                        Logger.incrementTransitionFireCounter(PetriNet.getTransitions().get(transitionId));
+                        Logger.incrementTransitionFireCounter(transitionId);
                         Logger.showTransitionFiring(PetriNet.getTransitions().get(transitionId), true);
                     } else {
-                        System.out.println("                   >>> | ERROR: Transition cannot be fired.");
+                        System.out.println("                    >>> | ERROR: Transition cannot be fired.");
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("                   >>> | ERROR: Invalid input.");
+                    System.out.println("                    >>> | ERROR: Invalid input.");
                 } catch (IndexOutOfBoundsException e) {
-                    System.out.println("                   >>> | ERROR: Invalid input.");
+                    System.out.println("                    >>> | ERROR: Invalid input.");
                 }
             }
         }
@@ -98,59 +100,38 @@ public class Monitor implements MonitorInterface {
     public final synchronized Boolean fireTransition(Integer transitionId) {
         if (PetriNet.getTransitions().get(transitionId).canFire()) {
             PetriNet.getTransitions().get(transitionId).fireTransition();
+            Logger.incrementTransitionFireCounter(transitionId);
+            Logger.showTransitionFiring(PetriNet.getTransitions().get(transitionId), true);
             return true;
         }
         return false;
     }
 
-    public static final void getPlaceSemaphore(ArrayList<Place> places) {
-        Boolean areAcquired = false;
-        while (!areAcquired) {
-            Integer acquired = 0;
-            for (Place place : places) {
-                try {
-                    if (!place.getSemaphore().tryAcquire(5, TimeUnit.MILLISECONDS)) {
-                        releasePlaceSemaphore(places, acquired);
-                        Thread.sleep((long) Math.random() * 10);
-                        break;
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                acquired++;
-                areAcquired = acquired == places.size();
-            }
-        }
-    }
-
-    public static final void getLoggerSemaphore() {
-        Boolean isAcquired = false;
-        while (!isAcquired) {
+    public static final void acquirePlace(ArrayList<Place> places) {
+        for (Place place : places) {
             try {
-                if (!Logger.getSemaphore().tryAcquire(5, TimeUnit.MILLISECONDS)) {
-                    Thread.sleep((long) Math.random() * 10);
-                } else {
-                    isAcquired = true;
-                }
+                place.getSemaphore().acquire();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static final void releasePlaceSemaphore(ArrayList<Place> places) {
+    public static final void acquireLogger() {
+        try {
+            Logger.getSemaphore().acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static final void releasePlace(ArrayList<Place> places) {
         for (Place place : places) {
             place.getSemaphore().release();
         }
     }
 
-    public static final void releasePlaceSemaphore(ArrayList<Place> places, int acquired) {
-        for (int i = 0; i < acquired; i++) {
-            places.get(i).getSemaphore().release();
-        }
-    }
-
-    public static final void releaseLoggerSemaphore() {
+    public static final void releaseLogger() {
         Logger.getSemaphore().release();
     }
 
@@ -161,4 +142,6 @@ public class Monitor implements MonitorInterface {
     public static final Boolean getSimulationIsRunning() { return simulationIsRunning; }
 
     public static final void setSimulationIsRunning(Boolean simulationIsRunning) { Monitor.simulationIsRunning = simulationIsRunning; }
+
+    public static final ArrayList<Thread> getThreads() { return threads; }
 }

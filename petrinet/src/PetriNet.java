@@ -15,9 +15,7 @@ public class PetriNet {
      * CONSTRUCTORS
      */
 
-    private PetriNet() {
-
-    }
+    private PetriNet() { }
 
     /*
      * METHODS

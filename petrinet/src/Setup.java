@@ -117,12 +117,22 @@ public class Setup {
     };
     private static final Float[] PROBABILITIES = {
         1.00f, // S0
+        0.50f, // S1
+        0.50f, // S2
+        0.50f, // S3
+        0.50f, // S4
+        1.00f  // S5
+    };
+    /*
+    private static final Float[] PROBABILITIES = {
+        1.00f, // S0
         0.75f, // S1
         0.25f, // S2
         0.80f, // S3
         0.20f, // S4
         1.00f  // S5
     };
+    */
     private static final Integer MAX_TRANSITION_FIRE_COUNTER = 186;
 
     /*

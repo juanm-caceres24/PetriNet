@@ -8,33 +8,34 @@ public class Main {
     
     public static void main(String args[]) {
 
-        // Initialize the PetriNet, policy and logger
+        // Initialize the PetriNet, policy, logger, and monitor
         PetriNet.initializePetriNet();
         Policy.initializePolicy();
         Logger.initializeLogger();
+        Monitor.initializeMonitorr();
         
-        // Selection of simulation or manual mode and run
-        System.out.println("=======================|");
-        System.out.println(" MODE SELECTION        |");
-        System.out.println("=======================|");
+        // Selection and launching of simulation mode or manual mode
+        System.out.println("========================|");
+        System.out.println(" MODE SELECTION         |");
+        System.out.println("========================|");
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.print("                   >>> | Select mode ('0'=Simulation, '1'=Manual mode): ");
+            System.out.print("                    >>> | Select mode ('0'=Simulation, '1'=Manual mode): ");
             String input = scanner.nextLine();
             if (input.equals("0")) {
-                Monitor.startSimulation();
+                Monitor.startSimulationMode();
                 break;
             } else if (input.equals("1")) {
                 Monitor.startManualMode();
                 break;
             } else {
-                System.out.println("                   >>> | ERROR: Invalid input.");
+                System.out.println("                    >>> | ERROR: Invalid input.");
             }
         }
         scanner.close();
 
         // Show end of the program
-        System.out.println("                   >>> | Program successfully finished!");
+        System.out.println("                    >>> | Program successfully finished!");
         return;
     }
 }

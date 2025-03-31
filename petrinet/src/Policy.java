@@ -1,25 +1,28 @@
+import java.util.ArrayList;
+
 public class Policy {
 
     /*
      * VARIABLES
      */
     
-    private static Float[] probabilites;
+    private static ArrayList<Float> probabilites;
 
     /*
      * CONSTRUCTORS
      */
 
-    private Policy() {
-
-    }
+    private Policy() { }
 
     /*
      * METHODS
      */
 
     public static final void initializePolicy() {
-        Policy.probabilites = Setup.getProbabilities();
+        probabilites = new ArrayList<>();
+        for (int i = 0; i < Setup.getProbabilities().length; i++) {
+            probabilites.add(Setup.getProbabilities()[i]);
+        }
         Logger.showPolicy();
     }
 
@@ -27,7 +30,12 @@ public class Policy {
      * GETTERS AND SETTERS
      */
 
-    public static final Float[] getProbabilites() { return probabilites; }
+    public static final ArrayList<Float> getProbabilites() { return probabilites; }
 
-    public static final void setProbabilites(Float[] probabilites) { Policy.probabilites = probabilites; }
+    public static final void setProbabilites(Float[] probabilites) {
+        Policy.probabilites = new ArrayList<>();
+        for (int i = 0; i < probabilites.length; i++) {
+            Policy.probabilites.add(probabilites[i]);
+        }
+    }
 }
