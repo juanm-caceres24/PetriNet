@@ -114,6 +114,7 @@ public class Setup {
         {  0,   0  }, // T10
         {  0,   0  }  // T11
     };
+    */
     private static final Float[] PROBABILITIES = {
         1.00f, // S0
         0.50f, // S1
@@ -122,7 +123,7 @@ public class Setup {
         0.50f, // S4
         1.00f  // S5
     };
-    */
+    /*
     private static final Float[] PROBABILITIES = {
         1.00f, // S0
         0.75f, // S1
@@ -131,7 +132,8 @@ public class Setup {
         0.20f, // S4
         1.00f  // S5
     };
-    private static final Integer MAX_TRANSITION_FIRE_COUNTER = 186;
+    */
+    private static final Integer MAX_SEGMENTS_COMPLETION_COUNTER = 186;
 
     /*
      * GETTERS AND SETTERS
@@ -153,5 +155,5 @@ public class Setup {
 
     public static final Float[] getProbabilities() { return PROBABILITIES; }
 
-    public static final Integer getMaxTransitionFireCounter() { return MAX_TRANSITION_FIRE_COUNTER; }
+    public static final Integer getMaxSegmentCompletionCounter() { return MAX_SEGMENTS_COMPLETION_COUNTER; }
 }

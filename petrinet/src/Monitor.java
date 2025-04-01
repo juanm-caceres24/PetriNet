@@ -7,11 +7,9 @@ public class Monitor implements MonitorInterface {
      * VARIABLES
      */
 
-    // Indicates the state of the simulation: 'false'=stopped, 'true'=running
-    private static Boolean simulationIsRunning;
-
-    // List of threads that are running the simulation
+    // List of threads that are running the simulation and their states ('0'=stopped, '1'=running, '2'=stopping)
     private static ArrayList<Thread> threads;
+    private static ArrayList<Integer> threadsState;
 
     /*
      * CONSTRUCTORS
@@ -23,26 +21,30 @@ public class Monitor implements MonitorInterface {
      * METHODS
      */
 
-    public static final void initializeMonitorr() {
-        simulationIsRunning = false;
+    public static final void initializeMonitor() {
         threads = new ArrayList<>();
+        for (Segment segment : PetriNet.getSegments()) {
+            threads.add(new Thread(segment));
+        }
+        threadsState = new ArrayList<>();
+        for (int i = 0; i < threads.size(); i++) {
+            threadsState.add(0);
+        }
     }
 
     public static final void startSimulationMode() {
 
         // Show start of simulation mode
         Logger.setStartTime(System.currentTimeMillis());
+        Logger.showThreadsState();
         Logger.showStartSimulation(true);
 
-        // Create threads for each segment
-        for (Segment segment : PetriNet.getSegments()) {
-            threads.add(new Thread(segment));
-        }
-
         // Start simulation mode
-        simulationIsRunning = true;
         for (Thread thread : threads) {
             thread.start();
+            Monitor.acquireLogger();
+            Logger.showThreadsState();
+            Monitor.releaseLogger();
         }
 
         // Wait for all segments to finish
@@ -55,7 +57,8 @@ public class Monitor implements MonitorInterface {
         }
 
         // Show end of simulation mode
-        Logger.showEndSimulation(true);
+        Logger.showEndSimulation(false);
+        Logger.showThreadsState();
     }
 
     public static final void startManualMode() {
@@ -65,13 +68,13 @@ public class Monitor implements MonitorInterface {
         Logger.showStartSimulation(true);
 
         // Start manual mode
-        simulationIsRunning = true;
+        Boolean isRunning = true;
         Scanner scanner = new Scanner(System.in);
-        while (simulationIsRunning) {
+        while (isRunning) {
             System.out.print("                                   >>> | Enter transition ID to fire ('exit'=quit): ");
             String input = scanner.nextLine();
             if (input.equals("exit")) {
-                simulationIsRunning = false;
+                isRunning = false;
                 break;
             } else {
                 try {
@@ -79,7 +82,10 @@ public class Monitor implements MonitorInterface {
                     if (PetriNet.getTransitions().get(transitionId).canFire()) {
                         PetriNet.getTransitions().get(transitionId).fireTransition();
                         Logger.incrementTransitionFireCounter(transitionId);
-                        Logger.showTransitionFiring(PetriNet.getTransitions().get(transitionId), true);
+                        Logger.showTransitionFiring(
+                                PetriNet.getTransitions().get(transitionId),
+                                true,
+                                false);
                     } else {
                         System.out.println("                                   >>> | ERROR: Transition cannot be fired.");
                     }
@@ -101,7 +107,10 @@ public class Monitor implements MonitorInterface {
         if (PetriNet.getTransitions().get(transitionId).canFire()) {
             PetriNet.getTransitions().get(transitionId).fireTransition();
             Logger.incrementTransitionFireCounter(transitionId);
-            Logger.showTransitionFiring(PetriNet.getTransitions().get(transitionId), true);
+            Logger.showTransitionFiring(
+                    PetriNet.getTransitions().get(transitionId),
+                    true,
+                    false);
             return true;
         }
         return false;
@@ -139,9 +148,15 @@ public class Monitor implements MonitorInterface {
      * GETTERS AND SETTERS
      */
 
-    public static final Boolean getSimulationIsRunning() { return simulationIsRunning; }
-
-    public static final void setSimulationIsRunning(Boolean simulationIsRunning) { Monitor.simulationIsRunning = simulationIsRunning; }
-
     public static final ArrayList<Thread> getThreads() { return threads; }
+
+    public static final ArrayList<Integer> getThreadsState() { return threadsState; }
+
+    public static final void setThreadState(
+            Integer threadId,
+            Integer state) {
+        
+        threadsState.set(threadId, state);
+        
+    }
 }

@@ -11,9 +11,9 @@ public class Segment implements Runnable {
     private ArrayList<Transition> transitions;
     private Place[] placeLimits;
 
-    // Variables to compare conflicts and apply Policy
-    Transition conflictedInternalTransition;
-    ArrayList<Transition> conflictedExternalTransitions;
+    // Variables to analize conflicts and apply Policy
+    private Transition[] transitionLimits;
+    private ArrayList<Transition> conflictedTransitions;
 
     /*
      * CONSTRUCTORS
@@ -29,20 +29,23 @@ public class Segment implements Runnable {
         this.places = places;
         this.transitions = transitions;
         this.placeLimits = placeLimits;
-        this.conflictedInternalTransition = null;
-        this.conflictedExternalTransitions = new ArrayList<>();
         
-        // Search the transition that is in the segment and has the same input place as the segment
+        // Search the transitions that are the limits of the segment
+        transitionLimits = new Transition[2];
         for (Transition transition : transitions) {
             if (transition.getInputPlaces().contains(placeLimits[0])) {
-                conflictedInternalTransition = transition;
+                transitionLimits[0] = transition;
+            }
+            if (transition.getOutputPlaces().contains(placeLimits[1])) {
+                transitionLimits[1] = transition;
             }
         }
 
         // Search all the others transitions of the others segments that have the same input place
+        conflictedTransitions = new ArrayList<>();
         for (Transition transition : PetriNet.getTransitions()) {
-            if (transition.getInputPlaces().contains(placeLimits[0]) && transition != conflictedInternalTransition) {
-                conflictedExternalTransitions.add(transition);
+            if (transition.getInputPlaces().contains(placeLimits[0]) && transition != transitionLimits[0]) {
+                conflictedTransitions.add(transition);
             }
         }
     }
@@ -50,89 +53,122 @@ public class Segment implements Runnable {
     /*
      * METHODS
      */
-    
+
     @Override
     public void run() {
 
-        // Fires possible transitions all the time while simulation is running
-        while (Monitor.getSimulationIsRunning()) {
-            for (Transition transition : transitions) {
+        // Set the state of the segment to running
+        Monitor.setThreadState(segmentId, 1);
 
-                // If is the first transition of the segment compare with the fire counters of the others conflicted transitions
-                if (transition == conflictedInternalTransition) {
-                    if (!shouldTakeNewToken()) {
-                        // If the transition is not allowed to fire, set the flag isWaiting to true
-                        transition.setIsWaiting(false);
-                    } else {
-                        // If the transition is allowed to fire, set the flag isWaiting to false
-                        transition.setIsWaiting(true);
-                    }
-                }
+        // Iterate all the transitions while the segment isn't stopped
+        while (Monitor.getThreadsState().get(segmentId) != 0) {
 
-                // Continue with the rest of the transitions
-                if (transition.getIsWaiting()) {
-
-                    // Acquires semaphores from input places
-                    Monitor.acquirePlace(transition.getInputPlaces());
-
-                    // Check if transition delay time has passed and if it can fire
-                    if (transition.getDelayTime() <= System.currentTimeMillis() && transition.canFire()) {
-
-                        // Acquires semaphores from output places
-                        Monitor.acquirePlace(transition.getOutputPlaces());
-
-                        // Fires transition and logs the firing
-                        transition.fireTransition();
-                        Monitor.acquireLogger();
-                        Logger.incrementTransitionFireCounter(transition.getTransitionId());
-                        Logger.showTransitionFiring(transition, true);
-                        Monitor.releaseLogger();
-
-                        // Check if the transition has fired enough times to stop the simulation
-                        if (Logger.getTransitionFireCounters().get(transition.getTransitionId()) >= Setup.getMaxTransitionFireCounter()) {
-                            Monitor.setSimulationIsRunning(false);
-                        }
-
-                        // Releases semaphores from output places
-                        Monitor.releasePlace(transition.getOutputPlaces());
-                    }
-
-                    // Releases semaphores from input places
-                    Monitor.releasePlace(transition.getInputPlaces());
-                } else {
-
-                    // Acquires semaphores from input places
-                    Monitor.acquirePlace(transition.getInputPlaces());
-
-                    // Randomizes delay time if transition can fire and set the flag isWaiting to true
-                    if (transition.canFire()) {
-                        transition.randomizeDelayTime();
-                    }
-
-                    // Releases semaphores from input places
-                    Monitor.releasePlace(transition.getInputPlaces());
-                }
+            // Check if the segment is empty and the state of the segment is stopping
+            if (Monitor.getThreadsState().get(segmentId) == 2 && isSegmentEmpty()) {
+                stopSegment();
+                break;
             }
+
+            // Iterate all the transitions of the segment and fire them if possible
+            transitions.forEach(transition -> {
+
+                // Check if the transition is the start of the segment and if it should take a new token
+                if (transition == transitionLimits[0] && !shouldTakeNewToken()) {
+                    transition.setIsWaiting(false);
+                }
+
+                // If transition is waiting, process it, else prepare it
+                if (transition.getIsWaiting()) {
+                    processTransition(transition);
+                } else {
+                    prepareTransition(transition);
+                }
+            });
         }
     }
 
-    public Boolean shouldTakeNewToken() {
-        if (!conflictedExternalTransitions.isEmpty()) {
+    private Boolean isSegmentEmpty() {
+        return places.stream()
+                .filter(place -> place != placeLimits[0] && place != placeLimits[1] && place.getIsTracked())
+                .mapToInt(place -> place.getTokens().size())
+                .sum() == 0;
+    }
 
-            // Count the total fires of all the conflicted transitions
-            Integer totalFires = Logger.getTransitionFireCounters().get(conflictedInternalTransition.getTransitionId());
-            for (Transition transition : conflictedExternalTransitions) {
-                totalFires += Logger.getTransitionFireCounters().get(transition.getTransitionId());
-            }
-            if (totalFires != 0) {
+    private void stopSegment() {
+        Monitor.setThreadState(segmentId, 0);
+        Monitor.acquireLogger();
+        Logger.showThreadsState();
+        Monitor.releaseLogger();
+    }
 
-                // Check if the total fires of the conflicted transitions is less than the maximum allowed
-                if ((float) Logger.getTransitionFireCounters().get(conflictedInternalTransition.getTransitionId()) / totalFires > Policy.getProbabilites().get(segmentId)) {
-                    return false;
-                }
-            }
+    private void processTransition(Transition transition) {
+        Monitor.acquirePlace(transition.getInputPlaces());
+        if (transition.getDelayTime() <= System.currentTimeMillis() && transition.canFire()) {
+            Monitor.acquirePlace(transition.getOutputPlaces());
+            transition.fireTransition();
+            logTransition(transition);
+            checkSegmentStoppingCondition(transition);
+            Monitor.releasePlace(transition.getOutputPlaces());
         }
-        return true;
+        Monitor.releasePlace(transition.getInputPlaces());
+    }
+
+    private void prepareTransition(Transition transition) {
+        Monitor.acquirePlace(transition.getInputPlaces());
+        if (transition.canFire()) {
+            transition.randomizeDelayTime();
+        }
+        Monitor.releasePlace(transition.getInputPlaces());
+    }
+
+    private void logTransition(Transition transition) {
+        Logger.incrementTransitionFireCounter(transition.getTransitionId());
+        if (transition == transitionLimits[1]) {
+            Logger.incrementSegmentCompletionCounter(segmentId);
+        }
+        Monitor.acquireLogger();
+        Logger.showTransitionFiring(transition, true, true);
+        Monitor.releaseLogger();
+    }
+
+    private void checkSegmentStoppingCondition(Transition transition) {
+        if (transition == transitionLimits[0] && getTotalFireCounter() >= Setup.getMaxSegmentCompletionCounter()) {
+            Monitor.setThreadState(segmentId, 2);
+            PetriNet.getSegments().stream()
+                    .filter(segment -> segment.getSegmentId() != segmentId && segment.getPlaceLimits()[0] == placeLimits[0])
+                    .forEach(segment -> Monitor.setThreadState(segment.getSegmentId(), 2));
+            Monitor.acquireLogger();
+            Logger.showThreadsState();
+            Monitor.releaseLogger();
+        }
+    }
+
+    private Integer getTotalFireCounter() {
+        return conflictedTransitions.stream()
+                .mapToInt(t -> Logger.getTransitionFireCounters().get(t.getTransitionId()))
+                .sum() + Logger.getTransitionFireCounters().get(transitionLimits[0].getTransitionId());
+        }
+
+    private Boolean shouldTakeNewToken() {
+
+        // If the segment is empty or the segment is not running, return true
+        if (conflictedTransitions.isEmpty() || Monitor.getThreadsState().get(segmentId) != 1) {
+            return true;
+        }
+
+        // Count the total number of fires of the conflicted transitions and the starting transition of the segment
+        Integer totalFires = conflictedTransitions.stream()
+                .mapToInt(t -> Logger.getTransitionFireCounters().get(t.getTransitionId()))
+                .sum() + Logger.getTransitionFireCounters().get(transitionLimits[0].getTransitionId());
+
+        // If there are no fires, return true
+        if (totalFires == 0) {
+            return true;
+        }
+
+        // Calculate the probability of the transition and compare it with the policy
+        Float transitionProbability = (float) Logger.getTransitionFireCounters().get(transitionLimits[0].getTransitionId()) / totalFires;
+        return transitionProbability <= Policy.getProbabilites().get(segmentId);
     }
 
     /*
@@ -147,7 +183,7 @@ public class Segment implements Runnable {
 
     public Place[] getPlaceLimits() { return placeLimits; }
 
-    public Transition getConflictedInternalTransition() { return conflictedInternalTransition; }
+    public Transition[] getTransitionsLimits() { return transitionLimits; }
 
-    public ArrayList<Transition> getConflictedExternalTransitions() { return conflictedExternalTransitions; }
+    public ArrayList<Transition> getConflictedTransitions() { return conflictedTransitions; }
 }

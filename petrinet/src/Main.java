@@ -12,7 +12,7 @@ public class Main {
         PetriNet.initializePetriNet();
         Policy.initializePolicy();
         Logger.initializeLogger();
-        Monitor.initializeMonitorr();
+        Monitor.initializeMonitor();
         
         // Selection and launching of simulation mode or manual mode
         System.out.println("=======================================|");

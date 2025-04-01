@@ -43,7 +43,10 @@ public class PetriNet {
 
         // Show creation of tokens, places, transitions, segments and policy
         Logger.showTokens();
-        Logger.showPlaces();
+        Logger.showPlaces(
+                false,
+                true,
+                true);
         Logger.showTransitions();
         Logger.showSegments();
     }
