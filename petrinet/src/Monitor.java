@@ -57,7 +57,7 @@ public class Monitor implements MonitorInterface {
         }
 
         // Show end of simulation mode
-        Logger.showEndSimulation(false);
+        Logger.showEndSimulation(true);
         Logger.showThreadsState();
     }
 

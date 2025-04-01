@@ -147,7 +147,7 @@ public class Segment implements Runnable {
         return conflictedTransitions.stream()
                 .mapToInt(t -> Logger.getTransitionFireCounters().get(t.getTransitionId()))
                 .sum() + Logger.getTransitionFireCounters().get(transitionLimits[0].getTransitionId());
-        }
+    }
 
     private Boolean shouldTakeNewToken() {
 
