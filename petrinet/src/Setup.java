@@ -85,20 +85,21 @@ public class Setup {
         {  9,   14  }, // S4
         {  14,  0   }  // S5
     };
+
     private static final Integer[][] DELAY_TIME_LIMITS_MATRIX = {
         // Min  Max
-        {  10,  10  }, // T0
-        {  20,  50  }, // T1
-        {  10,  10  }, // T2
-        {  10,  10  }, // T3
-        {  20,  50  }, // T4
-        {  20,  50  }, // T5
-        {  10,  10  }, // T6
-        {  10,  10  }, // T7
-        {  20,  50  }, // T8
-        {  20,  50  }, // T9
-        {  20,  50  }, // T10
-        {  10,  10  }  // T11
+        {  0,   0   }, // T0
+        {  10,  50  }, // T1
+        {  0,   0   }, // T2
+        {  0,   0   }, // T3
+        {  10,  50  }, // T4
+        {  10,  50  }, // T5
+        {  0,   1   }, // T6
+        {  0,   0   }, // T7
+        {  10,  50  }, // T8
+        {  10,  50  }, // T9
+        {  10,  50  }, // T10
+        {  0,   0   }  // T11
     };
     /*
     private static final Integer[][] DELAY_TIME_LIMITS_MATRIX = {
@@ -135,7 +136,7 @@ public class Setup {
         1.00f  // S5
     };
     */
-    private static final Integer MAX_SEGMENTS_COMPLETION_COUNTER = 10; // 186
+    private static final Integer MAX_SEGMENTS_COMPLETION_COUNTER = 186;
 
     /*
      * GETTERS AND SETTERS

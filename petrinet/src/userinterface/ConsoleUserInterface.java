@@ -169,8 +169,8 @@ public class ConsoleUserInterface implements UserInterface {
             }
             System.out.println("\n |-----------------> Starting place ID | " + segment.getPlaceLimits()[0].getPlaceId());
             System.out.println(" |-------------------> Ending place ID | " + segment.getPlaceLimits()[1].getPlaceId());
-            System.out.println(" |------------> Starting transition ID | " + segment.getTransitionsLimits()[0].getTransitionId());
-            System.out.println(" |--------------> Ending transition ID | " + segment.getTransitionsLimits()[1].getTransitionId());
+            System.out.println(" |------------> Starting transition ID | " + segment.getTransitionLimits()[0].getTransitionId());
+            System.out.println(" |--------------> Ending transition ID | " + segment.getTransitionLimits()[1].getTransitionId());
             System.out.print(" |---------> Conflicted transitions ID | "); 
             if (segment.getConflictedTransitions().isEmpty()) {
                 System.out.print("None");

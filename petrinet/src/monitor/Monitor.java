@@ -3,6 +3,7 @@ package petrinet.src.monitor;
 import petrinet.src.models.PetriNet;
 import petrinet.src.models.Place;
 import petrinet.src.models.Segment;
+import petrinet.src.threads.SegmentThread;
 import petrinet.src.utils.Logger;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class Monitor implements MonitorInterface {
     public static final void initializeMonitor() {
         threads = new ArrayList<>();
         for (Segment segment : PetriNet.getSegments()) {
-            threads.add(new Thread(segment));
+            threads.add(new Thread(new SegmentThread(segment)));
         }
         threadsState = new ArrayList<>();
         for (int i = 0; i < threads.size(); i++) {
