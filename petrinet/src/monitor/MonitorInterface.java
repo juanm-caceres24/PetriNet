@@ -1,3 +1,5 @@
+package petrinet.src.monitor;
+
 public interface MonitorInterface {
 
     /*

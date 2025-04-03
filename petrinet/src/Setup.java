@@ -1,3 +1,5 @@
+package petrinet.src;
+
 public class Setup {
 
     /*
@@ -133,7 +135,7 @@ public class Setup {
         1.00f  // S5
     };
     */
-    private static final Integer MAX_SEGMENTS_COMPLETION_COUNTER = 186;
+    private static final Integer MAX_SEGMENTS_COMPLETION_COUNTER = 10; // 186
 
     /*
      * GETTERS AND SETTERS

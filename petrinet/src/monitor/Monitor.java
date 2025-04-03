@@ -1,3 +1,10 @@
+package petrinet.src.monitor;
+
+import petrinet.src.models.PetriNet;
+import petrinet.src.models.Place;
+import petrinet.src.models.Segment;
+import petrinet.src.utils.Logger;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -34,16 +41,15 @@ public class Monitor implements MonitorInterface {
 
     public static final void startSimulationMode() {
 
-        // Show start of simulation mode
+        // Log start of simulation mode
         Logger.setStartTime(System.currentTimeMillis());
-        Logger.showThreadsState();
-        Logger.showStartSimulation(true);
+        Logger.logStartSimulation(true);
 
         // Start simulation mode
         for (Thread thread : threads) {
             thread.start();
             Monitor.acquireLogger();
-            Logger.showThreadsState();
+            Logger.logThreadsState();
             Monitor.releaseLogger();
         }
 
@@ -56,16 +62,15 @@ public class Monitor implements MonitorInterface {
             }
         }
 
-        // Show end of simulation mode
-        Logger.showEndSimulation(true);
-        Logger.showThreadsState();
+        // Log end of simulation mode
+        Logger.logEndSimulation(true);
     }
 
     public static final void startManualMode() {
     
-        // Show start of manual mode
+        // Log start of manual mode
         Logger.setStartTime(System.currentTimeMillis());
-        Logger.showStartSimulation(true);
+        Logger.logStartSimulation(true);
 
         // Start manual mode
         Boolean isRunning = true;
@@ -82,7 +87,7 @@ public class Monitor implements MonitorInterface {
                     if (PetriNet.getTransitions().get(transitionId).canFire()) {
                         PetriNet.getTransitions().get(transitionId).fireTransition();
                         Logger.incrementTransitionFireCounter(transitionId);
-                        Logger.showTransitionFiring(
+                        Logger.logTransitionFiring(
                                 PetriNet.getTransitions().get(transitionId),
                                 true,
                                 false);
@@ -98,8 +103,8 @@ public class Monitor implements MonitorInterface {
         }
         scanner.close();
 
-        // Show end of manual mode
-        Logger.showEndSimulation(true);
+        // Log end of manual mode
+        Logger.logEndSimulation(true);
     }
 
     @Override
@@ -107,7 +112,7 @@ public class Monitor implements MonitorInterface {
         if (PetriNet.getTransitions().get(transitionId).canFire()) {
             PetriNet.getTransitions().get(transitionId).fireTransition();
             Logger.incrementTransitionFireCounter(transitionId);
-            Logger.showTransitionFiring(
+            Logger.logTransitionFiring(
                     PetriNet.getTransitions().get(transitionId),
                     true,
                     false);
@@ -157,6 +162,5 @@ public class Monitor implements MonitorInterface {
             Integer state) {
         
         threadsState.set(threadId, state);
-        
     }
 }

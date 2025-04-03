@@ -1,44 +1,80 @@
-import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
+package petrinet.src.userinterface;
 
-public class Logger {
+import petrinet.src.Main;
+import petrinet.src.models.PetriNet;
+import petrinet.src.models.Place;
+import petrinet.src.models.Policy;
+import petrinet.src.models.Segment;
+import petrinet.src.models.Token;
+import petrinet.src.models.Transition;
+import petrinet.src.monitor.Monitor;
+import petrinet.src.utils.Logger;
 
-    /*
+import java.util.Scanner;
+
+public class ConsoleUserInterface implements UserInterface {
+
+    /* 
      * VARIABLES
      */
 
-    // Variables to track the simulation state
-    private static Long startTime;
-    private static ArrayList<Integer> transitionFireCounters;
-    private static ArrayList<Integer> segmentsCompletionCounters;
+    private final Scanner scanner;
 
-    // Semaphore to control access to the logger
-    private static Semaphore semaphore;
-
-    /*
+    /* 
      * CONSTRUCTORS
      */
 
-    private Logger() { }
+    public ConsoleUserInterface() {
+        super();
+        this.scanner = new Scanner(System.in);
+    }
 
-    /*
+    /* 
      * METHODS
      */
 
-    public static final void initializeLogger() {
-        startTime = null;
-        transitionFireCounters = new ArrayList<>();
-        for (int i = 0; i < PetriNet.getTransitions().size(); i++) {
-            transitionFireCounters.add(0);
+    @Override
+    public final void askForUserUserInterface() {
+        System.out.println("=======================================|");
+        System.out.println(" USER INTERFACE SELECTION              |");
+        System.out.println("=======================================|");
+        while (true) {
+            System.out.print("                                   >>> | Select user interface ('0'=Console, '1'=GUI): ");
+            String input = scanner.nextLine();
+            if (input.equals("0")) {
+                Main.setUserInterface(new ConsoleUserInterface());
+                break;
+            } else if (input.equals("1")) {
+                Main.setUserInterface(new GraphicUserInterface());
+                break;
+            } else {
+                System.out.println("                                   >>> | ERROR: Invalid input.");
+            }
         }
-        segmentsCompletionCounters = new ArrayList<>();
-        for (int i = 0; i < PetriNet.getSegments().size(); i++) {
-            segmentsCompletionCounters.add(0);
-        }
-        semaphore = new Semaphore(1);
     }
 
-    public static final void showTokens() {
+    @Override
+    public final void askForModeSelection() {
+        System.out.println("=======================================|");
+        System.out.println(" MODE SELECTION                        |");
+        System.out.println("=======================================|");
+        while (true) {
+            System.out.print("                                   >>> | Select mode ('0'=Simulation mode, '1'=Manual mode): ");
+            String input = scanner.nextLine();
+            if (input.equals("0")) {
+                Monitor.startSimulationMode();
+                break;
+            } else if (input.equals("1")) {
+                Monitor.startManualMode();
+                break;
+            } else {
+                System.out.println("                                   >>> | ERROR: Invalid input.");
+            }
+        }
+    }
+
+    @Override
+    public final void showTokens() {
         System.out.println("=======================================|");
         System.out.println(" TOKENS                                |");
         System.out.println("=======================================|");
@@ -53,7 +89,8 @@ public class Logger {
         System.out.println("Total tokens ------------------------- | " + totalTrackedTokens);
     }
 
-    public static final void showPlaces(
+    @Override
+    public final void showPlaces(
             Boolean showMinimal,
             Boolean showTitle,
             Boolean showIsTracked) {
@@ -95,7 +132,8 @@ public class Logger {
         }
     }
 
-    public static final void showTransitions() {
+    @Override
+    public final void showTransitions() {
         System.out.println("=======================================|");
         System.out.println(" TRANSITIONS                           |");
         System.out.println("=======================================|");
@@ -114,7 +152,8 @@ public class Logger {
         }
     }
 
-    public static final void showSegments() {
+    @Override
+    public final void showSegments() {
         System.out.println("=======================================|");
         System.out.println(" SEGMENTS                              |");
         System.out.println("=======================================|");
@@ -143,7 +182,22 @@ public class Logger {
         }
     }
 
-    public static final void showPolicy() {
+    @Override
+    public final void showPaths() {
+        System.out.println("=======================================|");
+        System.out.println(" PATHS                                 |");
+        System.out.println("=======================================|");
+        for (int i = 0; i < Logger.getPaths().size(); i++) {
+            System.out.print("Path " + i + " ------------------------------- | ");
+            for (Integer segmentId : Logger.getPaths().get(i)) {
+                System.out.print(segmentId + " ");
+            }
+            System.out.println("\n |---------------------------> Counter | " + Logger.getPathsCounters().get(i));
+        }
+    }
+
+    @Override
+    public final void showPolicy() {
         System.out.println("=======================================|");
         System.out.println(" POLICY                                |");
         System.out.println("=======================================|");
@@ -152,75 +206,8 @@ public class Logger {
         }
     }
 
-    public static final void showTransitionFiring(
-            Transition transition,
-            Boolean showMinimal,
-            Boolean showSegmentsCompletionCounters) {
-
-        System.out.println("=======================================|");
-        System.out.println(" TRANSITION FIRED                      |");
-        System.out.println("=======================================|");
-        showElapsedTime();
-        System.out.println("Transition fired --------------------- | " + transition.getTransitionId());
-        showTransitionFireCounters();
-        if (showSegmentsCompletionCounters) {
-            showSegmentsCompletionCounters();
-        }
-        showPlaces(
-                showMinimal,
-                false,
-                false);
-    }
-
-    public static final void showStartSimulation(Boolean showMinimal) {
-        System.out.println("=======================================|");
-        System.out.println(" START OF SIMULATION                   |");
-        System.out.println("=======================================|");
-        showElapsedTime();
-        showTransitionFireCounters();
-        showSegmentsCompletionCounters();
-        showPlaces(
-                showMinimal,
-                false,
-                false);
-    }
-
-    public static final void showEndSimulation(Boolean showMinimal) {
-        System.out.println("=======================================|");
-        System.out.println(" END OF SIMULATION                     |");
-        System.out.println("=======================================|");
-        showElapsedTime();
-        showTransitionFireCounters();
-        showSegmentsCompletionCounters();
-        showPlaces(
-                showMinimal,
-                false,
-                false);
-    }
-
-    private static final void showElapsedTime() {
-        System.out.println("Elapsed time ------------------------- | " + (System.currentTimeMillis() - startTime) + " [ms]");
-    }
-
-    private static final void showTransitionFireCounters() {
-        System.out.println("Transition counters ------------------ | T0  | T1  | T2  | T3  | T4  | T5  | T6  | T7  | T8  | T9  | T10 | T11 |");
-        System.out.print("                                       | ");
-        for (int i = 0; i < transitionFireCounters.size(); i++) {
-            System.out.printf("%-4d| ", transitionFireCounters.get(i));
-        }
-        System.out.println();
-    }
-
-    private static final void showSegmentsCompletionCounters() {
-        System.out.println("Segment counters --------------------- | S0  | S1  | S2  | S3  | S4  | S5  |");
-        System.out.print("                                       | ");
-        for (int i = 0; i < segmentsCompletionCounters.size(); i++) {
-            System.out.printf("%-4d| ", segmentsCompletionCounters.get(i));
-        }
-        System.out.println();
-    }
-
-    public static final void showThreadsState() {
+    @Override
+    public final void showThreadsState() {
         System.out.println("=======================================|");
         System.out.println(" THREADS STATE                         |");
         System.out.println("=======================================|");
@@ -229,29 +216,105 @@ public class Logger {
         }
     }
 
-    public static final void incrementTransitionFireCounter(Integer transitionId) {
-        transitionFireCounters.set(
-                transitionId,
-                transitionFireCounters.get(transitionId) + 1);
+    @Override
+    public final void showTransitionFiring(
+            Transition transition,
+            Boolean showMinimal,
+            Boolean showSegmentsCompletionCounters) {
+
+        System.out.println("=======================================|");
+        System.out.println(" TRANSITION FIRED                      |");
+        System.out.println("=======================================|");
+        this.showElapsedTime();
+        System.out.println("Transition fired --------------------- | " + transition.getTransitionId());
+        this.showTransitionFireCounters();
+        if (showSegmentsCompletionCounters) {
+            this.showSegmentCompletionCounters();
+        }
+        this.showPlaces(
+                showMinimal,
+                false,
+                false);
     }
 
-    public static void incrementSegmentCompletionCounter(Integer segmentId) {
-        segmentsCompletionCounters.set(
-                segmentId,
-                segmentsCompletionCounters.get(segmentId) + 1);
+    @Override
+    public final void showStartSimulation(Boolean showMinimal) {
+        System.out.println("=======================================|");
+        System.out.println(" START OF SIMULATION                   |");
+        System.out.println("=======================================|");
+        this.showElapsedTime();
+        this.showTransitionFireCounters();
+        this.showSegmentCompletionCounters();
+        this.showPlaces(
+                showMinimal,
+                false,
+                false);
+        this.showThreadsState();
+        this.showTransitionsByToken();
+    }
+
+    @Override
+    public final void showEndSimulation(Boolean showMinimal) {
+        System.out.println("=======================================|");
+        System.out.println(" END OF SIMULATION                     |");
+        System.out.println("=======================================|");
+        this.showElapsedTime();
+        this.showTransitionFireCounters();
+        this.showSegmentCompletionCounters();
+        this.showPlaces(
+                showMinimal,
+                false,
+                false);
+        this.showThreadsState();
+        this.showTransitionsByToken();
+    }
+
+    @Override
+    public final void showElapsedTime() {
+        System.out.println("Elapsed time ------------------------- | " + (System.currentTimeMillis() - Logger.getStartTime()) + " [ms]");
+    }
+
+    @Override
+    public final void showTransitionsByToken() {
+        System.out.println("=======================================|");
+        System.out.println(" TRANSITIONS BY TOKEN                  |");
+        System.out.println("=======================================|");
+        for (int i = 0; i < Logger.getTransitionsByTokenLogs().size(); i++) {
+            System.out.println("Token ID ----------------------------- | " + i);
+            System.out.print(" |--------------------> Transitions ID | ");
+            if (Logger.getTransitionsByTokenLogs().get(i).isEmpty()) {
+                System.out.print("None ");
+            }
+            for (Integer transitionId : Logger.getTransitionsByTokenLogs().get(i)) {
+                System.out.print(transitionId + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    @Override
+    public final void showTransitionFireCounters() {
+        System.out.println("Transition counters ------------------ | T0  | T1  | T2  | T3  | T4  | T5  | T6  | T7  | T8  | T9  | T10 | T11 |");
+        System.out.print("                                       | ");
+        for (int i = 0; i < Logger.getTransitionFireCounters().size(); i++) {
+            System.out.printf("%-4d| ", Logger.getTransitionFireCounters().get(i));
+        }
+        System.out.println();
+    }
+
+    @Override
+    public final void showSegmentCompletionCounters() {
+        System.out.println("Segment counters --------------------- | S0  | S1  | S2  | S3  | S4  | S5  |");
+        System.out.print("                                       | ");
+        for (int i = 0; i < Logger.getSegmentCompletionCounters().size(); i++) {
+            System.out.printf("%-4d| ", Logger.getSegmentCompletionCounters().get(i));
+        }
+        System.out.println();
     }
 
     /*
      * GETTERS AND SETTERS
      */
 
-    public static final Long getStartTime() { return startTime; }
-
-    public static final void setStartTime(Long startTime) { Logger.startTime = startTime; }
-
-    public static final ArrayList<Integer> getTransitionFireCounters() { return transitionFireCounters; }
-
-    public static final ArrayList<Integer> getSegmentsCompletionCounters() { return segmentsCompletionCounters; }
-
-    public static final Semaphore getSemaphore() { return semaphore; }
+    public Scanner getScanner() { return scanner; }
 }

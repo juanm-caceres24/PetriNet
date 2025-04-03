@@ -1,3 +1,8 @@
+package petrinet.src.models;
+
+import petrinet.src.utils.Logger;
+import petrinet.src.Setup;
+
 import java.util.ArrayList;
 
 public class Policy {
@@ -23,7 +28,7 @@ public class Policy {
         for (int i = 0; i < Setup.getProbabilities().length; i++) {
             probabilites.add(Setup.getProbabilities()[i]);
         }
-        Logger.showPolicy();
+        Logger.logPolicy();
     }
 
     /*

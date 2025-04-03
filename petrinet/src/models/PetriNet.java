@@ -1,3 +1,8 @@
+package petrinet.src.models;
+
+import petrinet.src.utils.Logger;
+import petrinet.src.Setup;
+
 import java.util.ArrayList;
 
 public class PetriNet {
@@ -41,14 +46,14 @@ public class PetriNet {
                 Setup.getTransitionsSegmentsMatrix(),
                 Setup.getSegmentsPlaceLimitsMatrix());
 
-        // Show creation of tokens, places, transitions, segments and policy
-        Logger.showTokens();
-        Logger.showPlaces(
+        // Log creation of tokens, places, transitions and segments
+        Logger.logTokens();
+        Logger.logPlaces(
                 false,
                 true,
                 true);
-        Logger.showTransitions();
-        Logger.showSegments();
+        Logger.logTransitions();
+        Logger.logSegments();
     }
 
     private static final void createTokens(

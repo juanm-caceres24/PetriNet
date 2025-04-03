@@ -1,3 +1,9 @@
+package petrinet.src.models;
+
+import petrinet.src.monitor.Monitor;
+import petrinet.src.utils.Logger;
+import petrinet.src.Setup;
+
 import java.util.ArrayList;
 
 public class Segment implements Runnable {
@@ -64,8 +70,8 @@ public class Segment implements Runnable {
         while (Monitor.getThreadsState().get(segmentId) != 0) {
 
             // Check if the segment is empty and the state of the segment is stopping
-            if (Monitor.getThreadsState().get(segmentId) == 2 && isSegmentEmpty()) {
-                stopSegment();
+            if (Monitor.getThreadsState().get(segmentId) == 2 && this.isSegmentEmpty()) {
+                this.stopSegment();
                 break;
             }
 
@@ -73,15 +79,15 @@ public class Segment implements Runnable {
             transitions.forEach(transition -> {
 
                 // Check if the transition is the start of the segment and if it should take a new token
-                if (transition == transitionLimits[0] && !shouldTakeNewToken()) {
+                if (transition == transitionLimits[0] && !this.shouldTakeNewToken()) {
                     transition.setIsWaiting(false);
                 }
 
                 // If transition is waiting, process it, else prepare it
                 if (transition.getIsWaiting()) {
-                    processTransition(transition);
+                    this.processTransition(transition);
                 } else {
-                    prepareTransition(transition);
+                    this.prepareTransition(transition);
                 }
             });
         }
@@ -97,7 +103,7 @@ public class Segment implements Runnable {
     private void stopSegment() {
         Monitor.setThreadState(segmentId, 0);
         Monitor.acquireLogger();
-        Logger.showThreadsState();
+        Logger.logThreadsState();
         Monitor.releaseLogger();
     }
 
@@ -105,9 +111,11 @@ public class Segment implements Runnable {
         Monitor.acquirePlace(transition.getInputPlaces());
         if (transition.getDelayTime() <= System.currentTimeMillis() && transition.canFire()) {
             Monitor.acquirePlace(transition.getOutputPlaces());
-            transition.fireTransition();
-            logTransition(transition);
-            checkSegmentStoppingCondition(transition);
+            Logger.addTransitionByTokenLog(
+                    transition.fireTransition(),
+                    transition.getTransitionId());
+            this.logTransition(transition);
+            this.checkSegmentStoppingCondition(transition);
             Monitor.releasePlace(transition.getOutputPlaces());
         }
         Monitor.releasePlace(transition.getInputPlaces());
@@ -127,7 +135,10 @@ public class Segment implements Runnable {
             Logger.incrementSegmentCompletionCounter(segmentId);
         }
         Monitor.acquireLogger();
-        Logger.showTransitionFiring(transition, true, true);
+        Logger.logTransitionFiring(
+                transition,
+                true,
+                true);
         Monitor.releaseLogger();
     }
 
@@ -138,7 +149,7 @@ public class Segment implements Runnable {
                     .filter(segment -> segment.getSegmentId() != segmentId && segment.getPlaceLimits()[0] == placeLimits[0])
                     .forEach(segment -> Monitor.setThreadState(segment.getSegmentId(), 2));
             Monitor.acquireLogger();
-            Logger.showThreadsState();
+            Logger.logThreadsState();
             Monitor.releaseLogger();
         }
     }

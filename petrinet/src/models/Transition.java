@@ -1,3 +1,5 @@
+package petrinet.src.models;
+
 import java.util.ArrayList;
 
 public class Transition {
@@ -39,7 +41,7 @@ public class Transition {
      * METHODS
      */
 
-    public void fireTransition() {
+    public Integer fireTransition() {
 
         // Token to be rescued from input places
         Token trackedToken = null;
@@ -60,6 +62,12 @@ public class Transition {
 
         // Set the waiting flag to false
         isWaiting = false;
+
+        if (trackedToken != null) {
+            return trackedToken.getTokenId();
+        } else {
+            return null;
+        }
     }
 
     public Boolean canFire() {
