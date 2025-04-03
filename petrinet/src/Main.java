@@ -32,8 +32,7 @@ public class Main {
         // Selection of mode
         userInterface.askForModeSelection();
 
-        // Show end of the program
-        System.out.println("                                   >>> | Program successfully finished!");
+        // End of the program
         return;
     }
 
