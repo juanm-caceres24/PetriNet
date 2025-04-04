@@ -30,27 +30,21 @@ public class SegmentThread implements Runnable {
 
     @Override
     public void run() {
-
         // Set the state of the segment to running
         Monitor.setThreadState(segment.getSegmentId(), 1);
-
         // Iterate all the transitions while the segment isn't stopped
         while (Monitor.getThreadsState().get(segment.getSegmentId()) != 0) {
-
             // Check if the segment is empty and the state of the segment is stopping
             if (Monitor.getThreadsState().get(segment.getSegmentId()) == 2 && this.isSegmentEmpty()) {
                 this.stopSegment();
                 break;
             }
-
             // Iterate all the transitions of the segment and fire them if possible
             segment.getTransitions().forEach(transition -> {
-
                 // Check if the transition is the start of the segment and if it should take a new token
                 if (transition == segment.getTransitionLimits()[0] && !this.shouldTakeNewToken()) {
                     transition.setIsWaiting(false);
                 }
-
                 // If transition is waiting, process it, else prepare it
                 if (transition.getIsWaiting()) {
                     this.processTransition(transition);
@@ -79,9 +73,7 @@ public class SegmentThread implements Runnable {
         Monitor.acquirePlace(transition.getInputPlaces());
         if (transition.getDelayTime() <= System.currentTimeMillis() && transition.canFire()) {
             Monitor.acquirePlace(transition.getOutputPlaces());
-            Logger.addTransitionByTokenLog(
-                    transition.fireTransition(),
-                    transition.getTransitionId());
+            Logger.addTransitionByTokenLog(transition.fireTransition(), transition.getTransitionId());
             this.logTransition(transition);
             this.checkSegmentStoppingCondition(transition);
             Monitor.releasePlace(transition.getOutputPlaces());
@@ -103,10 +95,7 @@ public class SegmentThread implements Runnable {
             Logger.incrementSegmentCompletionCounter(segment.getSegmentId());
         }
         Monitor.acquireLogger();
-        Logger.logTransitionFiring(
-                transition,
-                true,
-                true);
+        Logger.logTransitionFiring(transition, true, true);
         Monitor.releaseLogger();
     }
 
@@ -129,22 +118,18 @@ public class SegmentThread implements Runnable {
     }
 
     private Boolean shouldTakeNewToken() {
-
         // If the segment is empty or the segment is not running, return true
         if (segment.getConflictedTransitions().isEmpty() || Monitor.getThreadsState().get(segment.getSegmentId()) != 1) {
             return true;
         }
-
         // Count the total number of fires of the conflicted transitions and the starting transition of the segment
         Integer totalFires = segment.getConflictedTransitions().stream()
                 .mapToInt(t -> Logger.getTransitionFireCounters().get(t.getTransitionId()))
                 .sum() + Logger.getTransitionFireCounters().get(segment.getTransitionLimits()[0].getTransitionId());
-
         // If there are no fires, return true
         if (totalFires == 0) {
             return true;
         }
-
         // Calculate the probability of the transition and compare it with the policy
         Float transitionProbability = (float) Logger.getTransitionFireCounters().get(segment.getTransitionLimits()[0].getTransitionId()) / totalFires;
         return transitionProbability <= Policy.getProbabilites().get(segment.getSegmentId());

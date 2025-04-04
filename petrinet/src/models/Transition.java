@@ -9,11 +9,9 @@ public class Transition {
      */
 
     private Integer transitionId;
-
     // Connected input and output places
     private ArrayList<Place> inputPlaces;
     private ArrayList<Place> outputPlaces;
-
     // Delay time
     private Integer[] delayTimeLimits;
     private Long delayTime;
@@ -23,12 +21,7 @@ public class Transition {
      * CONSTRUCTORS
      */
 
-    public Transition(
-            Integer transitionId,
-            ArrayList<Place> inputPlaces,
-            ArrayList<Place> outputPlaces,
-            Integer[] delayTimeLimits) {
-
+    public Transition(Integer transitionId, ArrayList<Place> inputPlaces, ArrayList<Place> outputPlaces, Integer[] delayTimeLimits) {
         this.transitionId = transitionId;
         this.inputPlaces = inputPlaces;
         this.outputPlaces = outputPlaces;
@@ -42,11 +35,9 @@ public class Transition {
      */
 
     public Integer fireTransition() {
-
         // Token to be rescued from input places
         Token trackedToken = null;
         Token tmpToken;
-
         // Consumes tokens from input places
         for (int i = 0; i < inputPlaces.size(); i++) {
             tmpToken = inputPlaces.get(i).consume();
@@ -54,15 +45,12 @@ public class Transition {
                 trackedToken = tmpToken;
             }
         }
-
         // Produces tokens in output places
         for (int i = 0; i < outputPlaces.size(); i++) {
             outputPlaces.get(i).produce(trackedToken);
         }
-
         // Set the waiting flag to false
         isWaiting = false;
-
         if (trackedToken != null) {
             return trackedToken.getTokenId();
         } else {
@@ -71,7 +59,6 @@ public class Transition {
     }
 
     public Boolean canFire() {
-
         // Checks if there are enough tokens in input places to fire the transition
         for (int i = 0; i < inputPlaces.size(); i++) {
             if (inputPlaces.get(i).getTokens().isEmpty()) {
@@ -82,7 +69,6 @@ public class Transition {
     }
 
     public void randomizeDelayTime() {
-
         // Randomizes the delay time and sets the waiting flag to true
         delayTime = System.currentTimeMillis() + (long) (Math.random() * (delayTimeLimits[1] - delayTimeLimits[0] + 1) + delayTimeLimits[0]);
         isWaiting = true;

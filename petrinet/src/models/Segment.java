@@ -12,7 +12,6 @@ public class Segment {
     private ArrayList<Place> places;
     private ArrayList<Transition> transitions;
     private Place[] placeLimits;
-
     // Variables to analize conflicts and apply Policy
     private Transition[] transitionLimits;
     private ArrayList<Transition> conflictedTransitions;
@@ -21,17 +20,11 @@ public class Segment {
      * CONSTRUCTORS
      */
 
-    public Segment(
-            Integer segmentId,
-            ArrayList<Place> places,
-            ArrayList<Transition> transitions,
-            Place[] placeLimits) {
-
+    public Segment(Integer segmentId, ArrayList<Place> places, ArrayList<Transition> transitions, Place[] placeLimits) {
         this.segmentId = segmentId;
         this.places = places;
         this.transitions = transitions;
         this.placeLimits = placeLimits;
-        
         // Search the transitions that are the limits of the segment
         transitionLimits = new Transition[2];
         for (Transition transition : transitions) {
@@ -42,7 +35,6 @@ public class Segment {
                 transitionLimits[1] = transition;
             }
         }
-
         // Search all the others transitions of the others segments that have the same input place
         conflictedTransitions = new ArrayList<>();
         for (Transition transition : PetriNet.getTransitions()) {

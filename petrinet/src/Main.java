@@ -20,18 +20,22 @@ public class Main {
      */
     
     public static final void main(String args[]) {
-
         // Initialize the User Interface by default, PetriNet, Policy, Logger and Monitor
         userInterface = new ConsoleUserInterface();
-        userInterface.askForUserUserInterface();
+        userInterface = userInterface.requestUserInterface();
         PetriNet.initializePetriNet();
         Policy.initializePolicy();
         Logger.initializeLogger();
         Monitor.initializeMonitor();
-        
         // Selection of mode
-        userInterface.askForModeSelection();
-
+        switch (userInterface.requestModeSelection()) {
+            case "0":
+                Monitor.startSimulationMode();
+                break;
+            case "1":
+                Monitor.startManualMode();
+                break;
+        }
         // End of the program
         return;
     }

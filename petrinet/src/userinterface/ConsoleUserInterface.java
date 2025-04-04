@@ -1,6 +1,5 @@
 package petrinet.src.userinterface;
 
-import petrinet.src.Main;
 import petrinet.src.models.PetriNet;
 import petrinet.src.models.Place;
 import petrinet.src.models.Policy;
@@ -34,7 +33,7 @@ public class ConsoleUserInterface implements UserInterface {
      */
 
     @Override
-    public final void askForUserUserInterface() {
+    public final UserInterface requestUserInterface() {
         System.out.println("=======================================|");
         System.out.println(" USER INTERFACE SELECTION              |");
         System.out.println("=======================================|");
@@ -42,11 +41,9 @@ public class ConsoleUserInterface implements UserInterface {
             System.out.print("                                   >>> | Select user interface ('0'=Console, '1'=GUI): ");
             String input = scanner.nextLine();
             if (input.equals("0")) {
-                Main.setUserInterface(new ConsoleUserInterface());
-                break;
+                return new ConsoleUserInterface();
             } else if (input.equals("1")) {
-                Main.setUserInterface(new GraphicUserInterface());
-                break;
+                return new GraphicUserInterface();
             } else {
                 System.out.println("                                   >>> | ERROR: Invalid input.");
             }
@@ -54,7 +51,7 @@ public class ConsoleUserInterface implements UserInterface {
     }
 
     @Override
-    public final void askForModeSelection() {
+    public final String requestModeSelection() {
         System.out.println("=======================================|");
         System.out.println(" MODE SELECTION                        |");
         System.out.println("=======================================|");
@@ -62,14 +59,33 @@ public class ConsoleUserInterface implements UserInterface {
             System.out.print("                                   >>> | Select mode ('0'=Simulation mode, '1'=Manual mode): ");
             String input = scanner.nextLine();
             if (input.equals("0")) {
-                Monitor.startSimulationMode();
-                break;
+                return "0";
             } else if (input.equals("1")) {
-                Monitor.startManualMode();
-                break;
+                return "1";
             } else {
                 System.out.println("                                   >>> | ERROR: Invalid input.");
             }
+        }
+    }
+
+    @Override
+    public final String requestTransitionToFire() {
+        System.out.print("                                   >>> | Enter transition ID to fire ('exit'=quit): ");
+        return scanner.nextLine();
+    }
+
+    @Override
+    public final void showErrorMessage(Integer code) {
+        switch (code) {
+            case 0:
+                System.out.println("                                   >>> | ERROR: Invalid input.");
+                break;
+            case 1:
+                System.out.println("                                   >>> | ERROR: Transition cannot fire.");
+                break;
+            default:
+                System.out.println("                                   >>> | ERROR: Unknown error.");
+                break;
         }
     }
 
@@ -90,11 +106,7 @@ public class ConsoleUserInterface implements UserInterface {
     }
 
     @Override
-    public final void showPlaces(
-            Boolean showMinimal,
-            Boolean showTitle,
-            Boolean showIsTracked) {
-    
+    public final void showPlaces(Boolean showMinimal, Boolean showTitle, Boolean showIsTracked) {
         if (!showMinimal) {
             if (showTitle) {
                 System.out.println("=======================================|");
@@ -217,11 +229,7 @@ public class ConsoleUserInterface implements UserInterface {
     }
 
     @Override
-    public final void showTransitionFiring(
-            Transition transition,
-            Boolean showMinimal,
-            Boolean showSegmentsCompletionCounters) {
-
+    public final void showTransitionFiring(Transition transition, Boolean showMinimal, Boolean showSegmentsCompletionCounters) {
         System.out.println("=======================================|");
         System.out.println(" TRANSITION FIRED                      |");
         System.out.println("=======================================|");
@@ -231,10 +239,7 @@ public class ConsoleUserInterface implements UserInterface {
         if (showSegmentsCompletionCounters) {
             this.showSegmentCompletionCounters();
         }
-        this.showPlaces(
-                showMinimal,
-                false,
-                false);
+        this.showPlaces(showMinimal, false, false);
     }
 
     @Override
@@ -245,10 +250,7 @@ public class ConsoleUserInterface implements UserInterface {
         this.showElapsedTime();
         this.showTransitionFireCounters();
         this.showSegmentCompletionCounters();
-        this.showPlaces(
-                showMinimal,
-                false,
-                false);
+        this.showPlaces(showMinimal, false, false);
         this.showThreadsState();
         this.showTransitionsByToken();
     }
@@ -261,10 +263,7 @@ public class ConsoleUserInterface implements UserInterface {
         this.showElapsedTime();
         this.showTransitionFireCounters();
         this.showSegmentCompletionCounters();
-        this.showPlaces(
-                showMinimal,
-                false,
-                false);
+        this.showPlaces(showMinimal, false, false);
         this.showThreadsState();
         this.showTransitionsByToken();
     }

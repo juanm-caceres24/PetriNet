@@ -22,7 +22,6 @@ public class Logger {
     private static ArrayList<Integer> segmentCompletionCounters;
     private static ArrayList<ArrayList<Integer>> paths;
     private static ArrayList<Integer> pathsCounters;
-
     // Semaphore to control access to the logger
     private static Semaphore semaphore;
 
@@ -66,15 +65,8 @@ public class Logger {
         Main.getUserInterface().showTokens();
     }
 
-    public static final void logPlaces(
-            Boolean logMinimal,
-            Boolean logTitle,
-            Boolean logIsTracked) {
-
-        Main.getUserInterface().showPlaces(
-                logMinimal,
-                logTitle,
-                logIsTracked);
+    public static final void logPlaces(Boolean logMinimal, Boolean logTitle, Boolean logIsTracked) {
+        Main.getUserInterface().showPlaces(logMinimal, logTitle, logIsTracked);
     }
 
     public static final void logTransitions() {
@@ -97,15 +89,8 @@ public class Logger {
         Main.getUserInterface().showThreadsState();
     }
 
-    public static final void logTransitionFiring(
-            Transition transition,
-            Boolean logMinimal,
-            Boolean logSegmentsCompletionCounters) {
-
-        Main.getUserInterface().showTransitionFiring(
-                transition,
-                logMinimal,
-                logSegmentsCompletionCounters);
+    public static final void logTransitionFiring(Transition transition, Boolean logMinimal, Boolean logSegmentsCompletionCounters) {
+        Main.getUserInterface().showTransitionFiring(transition, logMinimal, logSegmentsCompletionCounters);
     }
 
     public static final void logStartSimulation(Boolean logMinimal) {
@@ -132,39 +117,23 @@ public class Logger {
         Main.getUserInterface().showSegmentCompletionCounters();
     }
 
-    public static final void addTransitionByTokenLog(
-            Integer tokenId,
-            Integer transitionId) {
-
+    public static final void addTransitionByTokenLog(Integer tokenId, Integer transitionId) {
         transitionsByTokenLogs.get(tokenId).add(transitionId);
     }
 
     public static final void incrementTransitionFireCounter(Integer transitionId) {
-        transitionFireCounters.set(
-                transitionId,
-                transitionFireCounters.get(transitionId) + 1);
+        transitionFireCounters.set(transitionId, transitionFireCounters.get(transitionId) + 1);
     }
 
     public static final void incrementSegmentCompletionCounter(Integer segmentId) {
-        segmentCompletionCounters.set(
-                segmentId,
-                segmentCompletionCounters.get(segmentId) + 1);
+        segmentCompletionCounters.set(segmentId, segmentCompletionCounters.get(segmentId) + 1);
     }
 
     private static final void initializePaths() {
-        Logger.findPaths(
-                PetriNet.getPlaces().get(0),
-                PetriNet.getPlaces().get(0),
-                new ArrayList<>(),
-                new ArrayList<>());
+        Logger.findPaths(PetriNet.getPlaces().get(0), PetriNet.getPlaces().get(0), new ArrayList<>(), new ArrayList<>());
     }
 
-    private static final void findPaths(
-            Place startPlace,
-            Place currentPlace,
-            ArrayList<Integer> currentPath,
-            ArrayList<Integer> visitedTransition) {
-
+    private static final void findPaths(Place startPlace, Place currentPlace, ArrayList<Integer> currentPath, ArrayList<Integer> visitedTransition) {
         for (Transition transition : PetriNet.getTransitions()) {
             if (transition.getInputPlaces().contains(currentPlace) && !visitedTransition.contains(transition.getTransitionId())) {
                 visitedTransition.add(transition.getTransitionId());

@@ -13,19 +13,22 @@ public class GraphicUserInterface implements UserInterface {
     }
 
     @Override
-    public final void askForUserUserInterface() { }
+    public final UserInterface requestUserInterface() { return null; }
 
     @Override
-    public final void askForModeSelection() { }
+    public final String requestModeSelection() { return null; }
+
+    @Override
+    public final String requestTransitionToFire() { return null; }
+
+    @Override
+    public final void showErrorMessage(Integer code) { }
 
     @Override
     public final void showTokens() { }
 
     @Override
-    public final void showPlaces(
-            Boolean showMinimal,
-            Boolean showTitle,
-            Boolean showIsTracked) { }
+    public final void showPlaces(Boolean showMinimal, Boolean showTitle, Boolean showIsTracked) { }
     
     @Override
     public final void showTransitions() { }
@@ -43,10 +46,7 @@ public class GraphicUserInterface implements UserInterface {
     public final void showThreadsState() { }
 
     @Override
-    public final void showTransitionFiring(
-            Transition transition,
-            Boolean showMinimal,
-            Boolean showSegmentsCompletionCounters) { }
+    public final void showTransitionFiring(Transition transition, Boolean showMinimal, Boolean showSegmentsCompletionCounters) { }
     
     @Override
     public final void showStartSimulation(Boolean showMinimal) { }
