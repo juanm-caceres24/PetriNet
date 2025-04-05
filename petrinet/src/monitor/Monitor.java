@@ -76,11 +76,14 @@ public class Monitor implements MonitorInterface {
                 try {
                     Integer transitionId = Integer.parseInt(input);
                     if (PetriNet.getTransitions().get(transitionId).canFire()) {
-                        PetriNet.getTransitions().get(transitionId).fireTransition();
-                        Logger.incrementTransitionFireCounter(transitionId);
-                        Logger.logTransitionFiring(PetriNet.getTransitions().get(transitionId), true, false);
+                        Integer trackedTokenId = PetriNet.getTransitions().get(transitionId).fireTransition();
+                        Segment segment = PetriNet.getSegments().stream()
+                                .filter(s -> s.getTransitions().contains(PetriNet.getTransitions().get(transitionId)))
+                                .findFirst()
+                                .orElse(null);
+                        Logger.logTransitionFiring(segment, PetriNet.getTransitions().get(transitionId), trackedTokenId, true, true);
                     } else {
-                        Main.getUserInterface().showErrorMessage(1);
+                        Main.getUserInterface().showErrorMessage(2);
                     }
                 } catch (NumberFormatException e) {
                     Main.getUserInterface().showErrorMessage(0);
@@ -96,9 +99,12 @@ public class Monitor implements MonitorInterface {
     @Override
     public final synchronized Boolean fireTransition(Integer transitionId) {
         if (PetriNet.getTransitions().get(transitionId).canFire()) {
-            PetriNet.getTransitions().get(transitionId).fireTransition();
-            Logger.incrementTransitionFireCounter(transitionId);
-            Logger.logTransitionFiring(PetriNet.getTransitions().get(transitionId), true, false);
+            Integer trackedTokenId = PetriNet.getTransitions().get(transitionId).fireTransition();
+            Segment segment = PetriNet.getSegments().stream()
+                    .filter(s -> s.getTransitions().contains(PetriNet.getTransitions().get(transitionId)))
+                    .findFirst()
+                    .orElse(null);
+            Logger.logTransitionFiring(segment, PetriNet.getTransitions().get(transitionId), trackedTokenId, true, false);
             return true;
         }
         return false;

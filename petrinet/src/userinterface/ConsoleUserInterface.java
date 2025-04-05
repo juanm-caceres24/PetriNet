@@ -24,7 +24,6 @@ public class ConsoleUserInterface implements UserInterface {
      */
 
     public ConsoleUserInterface() {
-        super();
         this.scanner = new Scanner(System.in);
     }
 
@@ -37,16 +36,16 @@ public class ConsoleUserInterface implements UserInterface {
         System.out.println("=======================================|");
         System.out.println(" USER INTERFACE SELECTION              |");
         System.out.println("=======================================|");
-        while (true) {
-            System.out.print("                                   >>> | Select user interface ('0'=Console, '1'=GUI): ");
-            String input = scanner.nextLine();
-            if (input.equals("0")) {
+        System.out.print("                                   >>> | Select user interface ('0'=Console, '1'=GUI, default=Console): ");
+        String input = scanner.nextLine();
+        switch (input) {
+            case "0":
                 return new ConsoleUserInterface();
-            } else if (input.equals("1")) {
+            case "1":
                 return new GraphicUserInterface();
-            } else {
-                System.out.println("                                   >>> | ERROR: Invalid input.");
-            }
+            default:
+                this.showErrorMessage(1);
+                return new ConsoleUserInterface();
         }
     }
 
@@ -55,16 +54,16 @@ public class ConsoleUserInterface implements UserInterface {
         System.out.println("=======================================|");
         System.out.println(" MODE SELECTION                        |");
         System.out.println("=======================================|");
-        while (true) {
-            System.out.print("                                   >>> | Select mode ('0'=Simulation mode, '1'=Manual mode): ");
-            String input = scanner.nextLine();
-            if (input.equals("0")) {
+        System.out.print("                                   >>> | Select mode ('0'=Simulation mode, '1'=Manual mode, default=Simualtion mode): ");
+        String input = scanner.nextLine();
+        switch (input) {
+            case "0":
                 return "0";
-            } else if (input.equals("1")) {
+            case "1":
                 return "1";
-            } else {
-                System.out.println("                                   >>> | ERROR: Invalid input.");
-            }
+            default:
+                this.showErrorMessage(1);
+                return "0";
         }
     }
 
@@ -78,9 +77,12 @@ public class ConsoleUserInterface implements UserInterface {
     public final void showErrorMessage(Integer code) {
         switch (code) {
             case 0:
-                System.out.println("                                   >>> | ERROR: Invalid input.");
+                System.out.println("                                   >>> | ERROR: Invalid input. Requesting again.");
                 break;
             case 1:
+                System.out.println("                                   >>> | ERROR: Invalid input. Setting default.");
+                break;
+            case 2:
                 System.out.println("                                   >>> | ERROR: Transition cannot fire.");
                 break;
             default:
@@ -276,7 +278,7 @@ public class ConsoleUserInterface implements UserInterface {
     @Override
     public final void showTransitionsByToken() {
         System.out.println("=======================================|");
-        System.out.println(" TRANSITIONS BY TOKEN                  |");
+        System.out.println(" TRANSITIONS TAKEN BY TOKEN            |");
         System.out.println("=======================================|");
         for (int i = 0; i < Logger.getTransitionsByTokenLogs().size(); i++) {
             System.out.println("Token ID ----------------------------- | " + i);

@@ -8,9 +8,7 @@ public class GraphicUserInterface implements UserInterface {
      * METHODS
      */
 
-    public GraphicUserInterface() {
-        super();
-    }
+    public GraphicUserInterface() { }
 
     @Override
     public final UserInterface requestUserInterface() { return null; }
