@@ -21,7 +21,11 @@ public class Transition {
      * CONSTRUCTORS
      */
 
-    public Transition(Integer transitionId, ArrayList<Place> inputPlaces, ArrayList<Place> outputPlaces, Integer[] delayTimeLimits) {
+    public Transition(
+            Integer transitionId,
+            ArrayList<Place> inputPlaces,
+            ArrayList<Place> outputPlaces,
+            Integer[] delayTimeLimits) {
         this.transitionId = transitionId;
         this.inputPlaces = inputPlaces;
         this.outputPlaces = outputPlaces;

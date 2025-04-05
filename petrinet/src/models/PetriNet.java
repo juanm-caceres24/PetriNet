@@ -31,18 +31,32 @@ public class PetriNet {
         PetriNet.places = new ArrayList<>();
         PetriNet.transitions = new ArrayList<>();
         PetriNet.segments = new ArrayList<>();
-        PetriNet.createTokens(Setup.getMainPlaces(), Setup.getInitialMarking());
-        PetriNet.createPlaces(Setup.getMainPlaces(), Setup.getInitialMarking());
-        PetriNet.createTransitions(Setup.getIncidenceMatrix(), Setup.getDelayTimeLimitsMatrix());
-        PetriNet.createSegments(Setup.getPlacesSegmentsMatrix(), Setup.getTransitionsSegmentsMatrix(), Setup.getSegmentsPlaceLimitsMatrix());
+        PetriNet.createTokens(
+                Setup.getMainPlaces(),
+                Setup.getInitialMarking());
+        PetriNet.createPlaces(
+                Setup.getMainPlaces(),
+                Setup.getInitialMarking());
+        PetriNet.createTransitions(
+                Setup.getIncidenceMatrix(),
+                Setup.getDelayTimeLimitsMatrix());
+        PetriNet.createSegments(
+                Setup.getPlacesSegmentsMatrix(),
+                Setup.getTransitionsSegmentsMatrix(),
+                Setup.getSegmentsPlaceLimitsMatrix());
         // Log creation of tokens, places, transitions and segments
         Logger.logTokens();
-        Logger.logPlaces(false, true, true);
+        Logger.logPlaces(
+                false,
+                true,
+                true);
         Logger.logTransitions();
         Logger.logSegments();
     }
 
-    private static final void createTokens(Integer[] mainPlaces, Integer[] initialMarking) {
+    private static final void createTokens(
+            Integer[] mainPlaces,
+            Integer[] initialMarking) {
         // Create tokens based on initial marking
         for (int i = 0; i < initialMarking.length; i++) {
             for (int j = 0; j < initialMarking[i]; j++) {
@@ -52,7 +66,9 @@ public class PetriNet {
         }
     }
 
-    private static final void createPlaces(Integer[] mainPlaces, Integer[] initialMarking) {
+    private static final void createPlaces(
+            Integer[] mainPlaces,
+            Integer[] initialMarking) {
         // Create places based on initial marking
         int tokenIndex = 0;
         for (int j = 0; j < initialMarking.length; j++) {
@@ -61,11 +77,16 @@ public class PetriNet {
                 tmp.add(tokens.get(tokenIndex));
                 tokenIndex++;
             }
-            PetriNet.places.add(new Place(j, mainPlaces[j] == 1, tmp));
+            PetriNet.places.add(new Place(
+                    j,
+                    mainPlaces[j] == 1,
+                    tmp));
         }
     }
 
-    private static final void createTransitions(Integer[][] incidenceMatrix, Integer[][] delayTimeLimits) {
+    private static final void createTransitions(
+            Integer[][] incidenceMatrix,
+            Integer[][] delayTimeLimits) {
         // Create transitions based on incidence matrix columns
         for (int i = 0; i < incidenceMatrix[0].length; i++) {
             ArrayList<Integer> quantitiesToConsume = new ArrayList<>();
@@ -82,12 +103,19 @@ public class PetriNet {
                     outputPlaces.add(places.get(j));
                 }
             }
-            Transition transition = new Transition(i, inputPlaces, outputPlaces, delayTimeLimits[i]);
+            Transition transition = new Transition(
+                    i,
+                    inputPlaces,
+                    outputPlaces,
+                    delayTimeLimits[i]);
             PetriNet.transitions.add(transition);
         }
     }
     
-    private static final void createSegments(Integer[][] placesSegmentsMatrix, Integer[][] transitionsSegmentsMatrix, Integer[][] segmentsPlaceLimitsMatrix) {
+    private static final void createSegments(
+            Integer[][] placesSegmentsMatrix,
+            Integer[][] transitionsSegmentsMatrix,
+            Integer[][] segmentsPlaceLimitsMatrix) {
         // Create transitions and places for each segment based on places segments matrix rows
         for (int i = 0; i < placesSegmentsMatrix.length; i++) {
             ArrayList<Place> places = new ArrayList<>();
@@ -104,7 +132,11 @@ public class PetriNet {
                     transitions.add(PetriNet.transitions.get(j));
                 }
             }
-            Segment segment = new Segment(i, places, transitions, new Place[] {
+            Segment segment = new Segment(
+                    i,
+                    places,
+                    transitions,
+                    new Place[] {
                 PetriNet.places.get(segmentsPlaceLimitsMatrix[i][0]), PetriNet.places.get(segmentsPlaceLimitsMatrix[i][1])
             });
             segments.add(segment);

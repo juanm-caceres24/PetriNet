@@ -20,7 +20,11 @@ public class Segment {
      * CONSTRUCTORS
      */
 
-    public Segment(Integer segmentId, ArrayList<Place> places, ArrayList<Transition> transitions, Place[] placeLimits) {
+    public Segment(
+            Integer segmentId,
+            ArrayList<Place> places,
+            ArrayList<Transition> transitions,
+            Place[] placeLimits) {
         this.segmentId = segmentId;
         this.places = places;
         this.transitions = transitions;

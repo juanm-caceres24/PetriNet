@@ -81,7 +81,12 @@ public class Monitor implements MonitorInterface {
                                 .filter(s -> s.getTransitions().contains(PetriNet.getTransitions().get(transitionId)))
                                 .findFirst()
                                 .orElse(null);
-                        Logger.logTransitionFiring(segment, PetriNet.getTransitions().get(transitionId), trackedTokenId, true, true);
+                        Logger.logTransitionFiring(
+                                segment,
+                                PetriNet.getTransitions().get(transitionId),
+                                trackedTokenId,
+                                true,
+                                true);
                     } else {
                         Main.getUserInterface().showErrorMessage(2);
                     }
@@ -104,7 +109,12 @@ public class Monitor implements MonitorInterface {
                     .filter(s -> s.getTransitions().contains(PetriNet.getTransitions().get(transitionId)))
                     .findFirst()
                     .orElse(null);
-            Logger.logTransitionFiring(segment, PetriNet.getTransitions().get(transitionId), trackedTokenId, true, false);
+            Logger.logTransitionFiring(
+                    segment,
+                    PetriNet.getTransitions().get(transitionId),
+                    trackedTokenId,
+                    true,
+                    false);
             return true;
         }
         return false;

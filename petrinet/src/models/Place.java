@@ -19,7 +19,10 @@ public class Place {
      * CONSTRUCTORS
      */
 
-    public Place(Integer placeId, Boolean isTracked, ArrayList<Token> tokens) {
+    public Place(
+            Integer placeId,
+            Boolean isTracked,
+            ArrayList<Token> tokens) {
         this.placeId = placeId;
         this.isTracked = isTracked;
         this.tokens = tokens;
@@ -55,7 +58,9 @@ public class Place {
                         }
                     }
                     if (!isFound) {
-                        tokens.add(new Token(tmpTokenId, isTracked));
+                        tokens.add(new Token(
+                                tmpTokenId,
+                                isTracked));
                         break;
                     }
                 }

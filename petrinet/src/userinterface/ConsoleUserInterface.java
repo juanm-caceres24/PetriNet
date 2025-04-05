@@ -108,7 +108,10 @@ public class ConsoleUserInterface implements UserInterface {
     }
 
     @Override
-    public final void showPlaces(Boolean showMinimal, Boolean showTitle, Boolean showIsTracked) {
+    public final void showPlaces(
+            Boolean showMinimal,
+            Boolean showTitle,
+            Boolean showIsTracked) {
         if (!showMinimal) {
             if (showTitle) {
                 System.out.println("=======================================|");
@@ -136,12 +139,16 @@ public class ConsoleUserInterface implements UserInterface {
             System.out.print("                                       | ");
             Integer totalTrackedTokens = 0;
             for (Place place : PetriNet.getPlaces()) {
-                System.out.printf("%-4d| ", place.getTokens().size());
+                System.out.printf(
+                        "%-4d| ",
+                        place.getTokens().size());
                 if (place.getIsTracked()) {
                     totalTrackedTokens += place.getTokens().size();
                 }
             }
-            System.out.printf("%-4d  |", totalTrackedTokens);
+            System.out.printf(
+                    "%-4d  |",
+                    totalTrackedTokens);
             System.out.println();
         }
     }
@@ -231,7 +238,10 @@ public class ConsoleUserInterface implements UserInterface {
     }
 
     @Override
-    public final void showTransitionFiring(Transition transition, Boolean showMinimal, Boolean showSegmentsCompletionCounters) {
+    public final void showTransitionFiring(
+            Transition transition,
+            Boolean showMinimal,
+            Boolean showSegmentsCompletionCounters) {
         System.out.println("=======================================|");
         System.out.println(" TRANSITION FIRED                      |");
         System.out.println("=======================================|");
@@ -241,7 +251,10 @@ public class ConsoleUserInterface implements UserInterface {
         if (showSegmentsCompletionCounters) {
             this.showSegmentCompletionCounters();
         }
-        this.showPlaces(showMinimal, false, false);
+        this.showPlaces(
+                showMinimal,
+                false,
+                false);
     }
 
     @Override
@@ -252,7 +265,10 @@ public class ConsoleUserInterface implements UserInterface {
         this.showElapsedTime();
         this.showTransitionFireCounters();
         this.showSegmentCompletionCounters();
-        this.showPlaces(showMinimal, false, false);
+        this.showPlaces(
+                showMinimal,
+                false,
+                false);
         this.showThreadsState();
         this.showTransitionsByToken();
     }
@@ -265,7 +281,10 @@ public class ConsoleUserInterface implements UserInterface {
         this.showElapsedTime();
         this.showTransitionFireCounters();
         this.showSegmentCompletionCounters();
-        this.showPlaces(showMinimal, false, false);
+        this.showPlaces(
+                showMinimal,
+                false,
+                false);
         this.showThreadsState();
         this.showTransitionsByToken();
     }
@@ -298,7 +317,9 @@ public class ConsoleUserInterface implements UserInterface {
         System.out.println("Transition counters ------------------ | T0  | T1  | T2  | T3  | T4  | T5  | T6  | T7  | T8  | T9  | T10 | T11 |");
         System.out.print("                                       | ");
         for (int i = 0; i < Logger.getTransitionFireCounters().size(); i++) {
-            System.out.printf("%-4d| ", Logger.getTransitionFireCounters().get(i));
+            System.out.printf(
+                    "%-4d| ",
+                    Logger.getTransitionFireCounters().get(i));
         }
         System.out.println();
     }
@@ -308,7 +329,9 @@ public class ConsoleUserInterface implements UserInterface {
         System.out.println("Segment counters --------------------- | S0  | S1  | S2  | S3  | S4  | S5  |");
         System.out.print("                                       | ");
         for (int i = 0; i < Logger.getSegmentCompletionCounters().size(); i++) {
-            System.out.printf("%-4d| ", Logger.getSegmentCompletionCounters().get(i));
+            System.out.printf(
+                    "%-4d| ",
+                    Logger.getSegmentCompletionCounters().get(i));
         }
         System.out.println();
     }

@@ -74,7 +74,9 @@ public class SegmentThread implements Runnable {
         if (transition.getDelayTime() <= System.currentTimeMillis() && transition.canFire()) {
             Monitor.acquirePlace(transition.getOutputPlaces());
             Integer trackedTokenId = transition.fireTransition();
-            this.logTransition(transition, trackedTokenId);
+            this.logTransition(
+                    transition,
+                    trackedTokenId);
             this.checkSegmentStoppingCondition(transition);
             Monitor.releasePlace(transition.getOutputPlaces());
         }
@@ -89,9 +91,16 @@ public class SegmentThread implements Runnable {
         Monitor.releasePlace(transition.getInputPlaces());
     }
 
-    private void logTransition(Transition transition, Integer trackedTokenId) {
+    private void logTransition(
+            Transition transition,
+            Integer trackedTokenId) {
         Monitor.acquireLogger();
-        Logger.logTransitionFiring(segment, transition, trackedTokenId, true, true);
+        Logger.logTransitionFiring(
+                segment,
+                transition,
+                trackedTokenId,
+                true,
+                true);
         Monitor.releaseLogger();
     }
 
