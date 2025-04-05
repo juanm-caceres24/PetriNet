@@ -137,8 +137,9 @@ public class PetriNet {
                     places,
                     transitions,
                     new Place[] {
-                PetriNet.places.get(segmentsPlaceLimitsMatrix[i][0]), PetriNet.places.get(segmentsPlaceLimitsMatrix[i][1])
-            });
+                        PetriNet.places.get(segmentsPlaceLimitsMatrix[i][0]),
+                        PetriNet.places.get(segmentsPlaceLimitsMatrix[i][1])
+                    });
             segments.add(segment);
         }
     }

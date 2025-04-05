@@ -8,7 +8,7 @@ public interface UserInterface {
      * METHODS
      */
 
-    public abstract UserInterface requestUserInterface();
+    public abstract String requestUserInterface();
     public abstract String requestModeSelection();
     public abstract String requestTransitionToFire();
     public abstract void showErrorMessage(Integer code);

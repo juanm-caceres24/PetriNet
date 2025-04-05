@@ -32,7 +32,7 @@ public class ConsoleUserInterface implements UserInterface {
      */
 
     @Override
-    public final UserInterface requestUserInterface() {
+    public final String requestUserInterface() {
         System.out.println("=======================================|");
         System.out.println(" USER INTERFACE SELECTION              |");
         System.out.println("=======================================|");
@@ -40,12 +40,12 @@ public class ConsoleUserInterface implements UserInterface {
         String input = scanner.nextLine();
         switch (input) {
             case "0":
-                return new ConsoleUserInterface();
+                return "0";
             case "1":
-                return new GraphicUserInterface();
+                return "1";
             default:
                 this.showErrorMessage(1);
-                return new ConsoleUserInterface();
+                return "0";
         }
     }
 

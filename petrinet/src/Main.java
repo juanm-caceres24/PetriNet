@@ -4,6 +4,7 @@ import petrinet.src.models.PetriNet;
 import petrinet.src.models.Policy;
 import petrinet.src.monitor.Monitor;
 import petrinet.src.userinterface.ConsoleUserInterface;
+import petrinet.src.userinterface.GraphicUserInterface;
 import petrinet.src.userinterface.UserInterface;
 import petrinet.src.utils.Logger;
 
@@ -20,9 +21,15 @@ public class Main {
      */
     
     public static final void main(String args[]) {
-        // Initialize the User Interface by default, PetriNet, Policy, Logger and Monitor
+        // Initialize the User Interface, PetriNet, Policy, Logger and Monitor
         userInterface = new ConsoleUserInterface();
-        userInterface = userInterface.requestUserInterface();
+        switch (userInterface.requestUserInterface()) {
+            case "0":
+                userInterface = new ConsoleUserInterface();
+                break;
+            case "1":
+                userInterface = new GraphicUserInterface();
+        }
         PetriNet.initializePetriNet();
         Policy.initializePolicy();
         Logger.initializeLogger();

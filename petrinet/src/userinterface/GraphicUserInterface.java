@@ -11,7 +11,7 @@ public class GraphicUserInterface implements UserInterface {
     public GraphicUserInterface() { }
 
     @Override
-    public final UserInterface requestUserInterface() { return null; }
+    public final String requestUserInterface() { return null; }
 
     @Override
     public final String requestModeSelection() { return null; }
