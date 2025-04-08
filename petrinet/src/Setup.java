@@ -89,7 +89,7 @@ public class Setup {
         {  9,   14  }, // S4
         {  14,  0   }  // S5
     };
-
+    /*
     private static final Integer[][] DELAY_TIME_LIMITS_MATRIX = {
         // Min  Max
         {  0,   0   }, // T0
@@ -105,7 +105,7 @@ public class Setup {
         {  5,   40  }, // T10
         {  0,   0   }  // T11
     };
-    /*
+    */
     private static final Integer[][] DELAY_TIME_LIMITS_MATRIX = {
         // Min  Max
         {  0,   0  }, // T0
@@ -121,7 +121,6 @@ public class Setup {
         {  0,   0  }, // T10
         {  0,   0  }  // T11
     };
-    */
     private static final Float[] PROBABILITIES = {
         1.00f, // S0
         0.50f, // S1
