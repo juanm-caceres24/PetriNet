@@ -43,7 +43,7 @@ public class Monitor implements MonitorInterface {
     public static final void startSimulationMode() {
         // Log start of simulation mode
         Logger.setStartTime(System.currentTimeMillis());
-        Logger.logStartSimulation(true);
+        Logger.logStartSimulation();
         // Start simulation mode
         for (Thread thread : threads) {
             thread.start();
@@ -60,13 +60,13 @@ public class Monitor implements MonitorInterface {
             }
         }
         // Log end of simulation mode
-        Logger.logEndSimulation(true);
+        Logger.logEndSimulation();
     }
 
     public static final void startManualMode() {
         // Log start of manual mode
         Logger.setStartTime(System.currentTimeMillis());
-        Logger.logStartSimulation(true);
+        Logger.logStartSimulation();
         // Start manual mode
         while (true) {
             String input = Main.getUserInterface().requestTransitionToFire();
@@ -85,7 +85,6 @@ public class Monitor implements MonitorInterface {
                                 segment,
                                 PetriNet.getTransitions().get(transitionId),
                                 trackedTokenId,
-                                true,
                                 true);
                     } else {
                         Main.getUserInterface().showErrorMessage(2);
@@ -98,7 +97,7 @@ public class Monitor implements MonitorInterface {
             }
         }
         // Log end of manual mode
-        Logger.logEndSimulation(true);
+        Logger.logEndSimulation();
     }
 
     @Override
@@ -113,8 +112,7 @@ public class Monitor implements MonitorInterface {
                     segment,
                     PetriNet.getTransitions().get(transitionId),
                     trackedTokenId,
-                    true,
-                    false);
+                    true);
             return true;
         }
         return false;

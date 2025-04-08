@@ -99,7 +99,6 @@ public class SegmentThread implements Runnable {
                 segment,
                 transition,
                 trackedTokenId,
-                true,
                 true);
         Monitor.releaseLogger();
     }

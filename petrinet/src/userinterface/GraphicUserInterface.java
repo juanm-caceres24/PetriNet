@@ -38,9 +38,6 @@ public class GraphicUserInterface implements UserInterface {
     public final void showSegments() { }
 
     @Override
-    public final void showPaths() { }
-
-    @Override
     public final void showPolicy() { }
 
     @Override
@@ -49,20 +46,22 @@ public class GraphicUserInterface implements UserInterface {
     @Override
     public final void showTransitionFiring(
             Transition transition,
-            Boolean showMinimal,
-            Boolean showSegmentsCompletionCounters) { }
+            Boolean showMinimal) { }
     
     @Override
-    public final void showStartSimulation(Boolean showMinimal) { }
+    public final void showStartSimulation() { }
 
     @Override
-    public final void showEndSimulation(Boolean showMinimal) { }
+    public final void showEndSimulation() { }
+
+    @Override
+    public final void showTransitionsByToken() { }
 
     @Override
     public final void showElapsedTime() { }
 
     @Override
-    public final void showTransitionsByToken() { }
+    public final void showPaths(Boolean showTitle) { }
 
     @Override
     public final void showTransitionFireCounters() { }

@@ -204,20 +204,6 @@ public class ConsoleUserInterface implements UserInterface {
     }
 
     @Override
-    public final void showPaths() {
-        System.out.println("=======================================|");
-        System.out.println(" PATHS                                 |");
-        System.out.println("=======================================|");
-        for (int i = 0; i < Logger.getPaths().size(); i++) {
-            System.out.print("Path " + i + " ------------------------------- | ");
-            for (Integer segmentId : Logger.getPaths().get(i)) {
-                System.out.print(segmentId + " ");
-            }
-            System.out.println("\n |---------------------------> Counter | " + Logger.getPathsCounters().get(i));
-        }
-    }
-
-    @Override
     public final void showPolicy() {
         System.out.println("=======================================|");
         System.out.println(" POLICY                                |");
@@ -240,25 +226,23 @@ public class ConsoleUserInterface implements UserInterface {
     @Override
     public final void showTransitionFiring(
             Transition transition,
-            Boolean showMinimal,
-            Boolean showSegmentsCompletionCounters) {
+            Boolean showMinimal) {
         System.out.println("=======================================|");
         System.out.println(" TRANSITION FIRED                      |");
         System.out.println("=======================================|");
         this.showElapsedTime();
         System.out.println("Transition fired --------------------- | " + transition.getTransitionId());
         this.showTransitionFireCounters();
-        if (showSegmentsCompletionCounters) {
-            this.showSegmentCompletionCounters();
-        }
+        this.showSegmentCompletionCounters();
         this.showPlaces(
                 showMinimal,
                 false,
                 false);
+        this.showPaths(false);
     }
 
     @Override
-    public final void showStartSimulation(Boolean showMinimal) {
+    public final void showStartSimulation() {
         System.out.println("=======================================|");
         System.out.println(" START OF SIMULATION                   |");
         System.out.println("=======================================|");
@@ -266,15 +250,16 @@ public class ConsoleUserInterface implements UserInterface {
         this.showTransitionFireCounters();
         this.showSegmentCompletionCounters();
         this.showPlaces(
-                showMinimal,
+                true,
                 false,
                 false);
         this.showThreadsState();
         this.showTransitionsByToken();
+        this.showPaths(true);
     }
 
     @Override
-    public final void showEndSimulation(Boolean showMinimal) {
+    public final void showEndSimulation() {
         System.out.println("=======================================|");
         System.out.println(" END OF SIMULATION                     |");
         System.out.println("=======================================|");
@@ -282,16 +267,12 @@ public class ConsoleUserInterface implements UserInterface {
         this.showTransitionFireCounters();
         this.showSegmentCompletionCounters();
         this.showPlaces(
-                showMinimal,
+                true,
                 false,
                 false);
         this.showThreadsState();
         this.showTransitionsByToken();
-    }
-
-    @Override
-    public final void showElapsedTime() {
-        System.out.println("Elapsed time ------------------------- | " + (System.currentTimeMillis() - Logger.getStartTime()) + " [ms]");
+        this.showPaths(true);
     }
 
     @Override
@@ -309,6 +290,27 @@ public class ConsoleUserInterface implements UserInterface {
                 System.out.print(transitionId + " ");
             }
             System.out.println();
+        }
+    }
+
+    @Override
+    public final void showElapsedTime() {
+        System.out.println("Elapsed time ------------------------- | " + (System.currentTimeMillis() - Logger.getStartTime()) + " [ms]");
+    }
+
+    @Override
+    public final void showPaths(Boolean showTitle) {
+        if (showTitle) {
+            System.out.println("=======================================|");
+            System.out.println(" PATHS                                 |");
+            System.out.println("=======================================|");
+        }
+        for (int i = 0; i < Logger.getPaths().size(); i++) {
+            System.out.print("Path " + i + " ------------------------------- | ");
+            for (Integer segmentId : Logger.getPaths().get(i)) {
+                System.out.print(segmentId + " ");
+            }
+            System.out.println("\n |---------------------------> Counter | " + Logger.getPathsCounters().get(i));
         }
     }
 

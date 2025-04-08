@@ -19,17 +19,16 @@ public interface UserInterface {
             Boolean showIsTracked);
     public abstract void showTransitions();
     public abstract void showSegments();
-    public abstract void showPaths();
     public abstract void showPolicy();
     public abstract void showThreadsState();
     public abstract void showTransitionFiring(
             Transition transition,
-            Boolean showMinimal,
-            Boolean showSegmentsCompletionCounters);
-    public abstract void showStartSimulation(Boolean showMinimal);
-    public abstract void showEndSimulation(Boolean showMinimal);
-    public abstract void showElapsedTime();
+            Boolean showMinimal);
+    public abstract void showStartSimulation();
+    public abstract void showEndSimulation();
     public abstract void showTransitionsByToken();
+    public abstract void showElapsedTime();
+    public abstract void showPaths(Boolean showTitle);
     public abstract void showTransitionFireCounters();
     public abstract void showSegmentCompletionCounters();
 }

@@ -86,7 +86,7 @@ public class Logger {
     }
 
     public static final void logPaths() {
-        Main.getUserInterface().showPaths();
+        Main.getUserInterface().showPaths(true);
     }
 
     public static final void logPolicy() {
@@ -101,29 +101,33 @@ public class Logger {
             Segment segment,
             Transition transition,
             Integer trackedTokenId,
-            Boolean logMinimal,
-            Boolean logSegmentsCompletionCounters) {
+            Boolean logMinimal) {
+        // Add the transition to the list of transitions fired by the tracked token
         transitionsByTokenLogs.get(trackedTokenId).add(transition.getTransitionId());
+        // Increment the counter of the fired transition
         transitionFireCounters.set(
                 transition.getTransitionId(),
                 transitionFireCounters.get(transition.getTransitionId()) + 1);
+        // Increment the counter of the segment when fires the last transition of the segment
         if (transition == segment.getTransitionLimits()[1]) {
             segmentCompletionCounters.set(
                     segment.getSegmentId(),
                     segmentCompletionCounters.get(segment.getSegmentId()) + 1);
         }
+        // Increment the counter of the followed actual path when fires the last transition of a path
+        // CODE TO BE COMPLETED
+        // Show the transition firing
         Main.getUserInterface().showTransitionFiring(
                 transition,
-                logMinimal,
-                logSegmentsCompletionCounters);
+                logMinimal);
     }
 
-    public static final void logStartSimulation(Boolean logMinimal) {
-        Main.getUserInterface().showStartSimulation(logMinimal);
+    public static final void logStartSimulation() {
+        Main.getUserInterface().showStartSimulation();
     }
 
-    public static final void logEndSimulation(Boolean logMinimal) {
-        Main.getUserInterface().showEndSimulation(logMinimal);
+    public static final void logEndSimulation() {
+        Main.getUserInterface().showEndSimulation();
     }
 
     public static final void logElapsedTime() {
