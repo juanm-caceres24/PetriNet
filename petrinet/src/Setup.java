@@ -42,7 +42,7 @@ public class Setup {
         1  // P14
     };
     private static final Integer[] INITIAL_MARKING = {
-        8, // P0
+        5, // P0
         1, // P1
         0, // P2
         0, // P3

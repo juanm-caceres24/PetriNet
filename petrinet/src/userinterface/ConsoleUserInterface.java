@@ -286,8 +286,15 @@ public class ConsoleUserInterface implements UserInterface {
             if (Logger.getTransitionsByTokenLogs().get(i).isEmpty()) {
                 System.out.print("None ");
             }
+            Integer transitionsCounter = 0;
             for (Integer transitionId : Logger.getTransitionsByTokenLogs().get(i)) {
+                // Print lines of 50 elements and then insert a new row
+                if (transitionsCounter % 50 == 0 && transitionsCounter != 0) {
+                    System.out.println();
+                    System.out.print("                                     + | ");
+                }
                 System.out.print(transitionId + " ");
+                transitionsCounter++;
             }
             System.out.println();
         }

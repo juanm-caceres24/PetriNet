@@ -8,6 +8,9 @@ import petrinet.src.models.Segment;
 import petrinet.src.models.Token;
 import petrinet.src.models.Transition;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -17,6 +20,8 @@ public class Logger {
      * VARIABLES
      */
 
+    // File paths
+    private static String TRANSITIONS_FILE_PATH = "petrinet/logs/transitions.txt";
     // Variables to track simulation states, counters and statistics
     private static Long startTime;
     private static ArrayList<ArrayList<Integer>> transitionsByTokenLogs;
@@ -114,8 +119,31 @@ public class Logger {
                     segment.getSegmentId(),
                     segmentCompletionCounters.get(segment.getSegmentId()) + 1);
         }
-        // Increment the counter of the followed actual path when fires the last transition of a path
-        // CODE TO BE COMPLETED
+        // Check if this transition completes any path for the tracked token
+        ArrayList<Integer> transitionsOfToken = transitionsByTokenLogs.get(trackedTokenId);
+        for (int i = 0; i < paths.size(); i++) {
+            ArrayList<Integer> path = paths.get(i);
+            // Check if the sequence of transitions of the token matches this path
+            if (transitionsOfToken.size() >= path.size()) {
+                boolean completedPath = true;
+                // Check if the last 'path.size()' transitions match the path
+                for (int j = 0; j < path.size(); j++) {
+                    if (!transitionsOfToken.get(transitionsOfToken.size() - path.size() + j).equals(path.get(j))) {
+                        completedPath = false;
+                        break;
+                    }
+                }
+                if (completedPath) {
+                    // Increment the counter for this path
+                    pathsCounters.set(i, pathsCounters.get(i) + 1);
+                }
+            }
+        }
+        // Add the transition to the transitions.txt file
+        Logger.dumpIntoFile(
+                "T" + transition.getTransitionId(),
+                TRANSITIONS_FILE_PATH);
+
         // Show the transition firing
         Main.getUserInterface().showTransitionFiring(
                 transition,
@@ -182,9 +210,25 @@ public class Logger {
         }
     }
 
+    private static final Integer dumpIntoFile(
+            String data,
+            String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(
+                filePath,
+                true))) {
+            writer.write(data);
+            return 1;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
     /*
      * GETTERS AND SETTERS
      */
+
+    public static final String getTransitionsFilePath() { return TRANSITIONS_FILE_PATH; }
 
     public static final Long getStartTime() { return startTime; }
 
