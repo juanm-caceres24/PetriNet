@@ -9,6 +9,7 @@ import petrinet.src.models.Token;
 import petrinet.src.models.Transition;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,6 +44,11 @@ public class Logger {
      */
 
     public static final void initializeLogger() {
+        // If the transitions.txt file exists, delete it
+        File transitionsFile = new File(TRANSITIONS_FILE_PATH);
+        if (transitionsFile.exists()) {
+            transitionsFile.delete();
+        }
         startTime = null;
         transitionsByTokenLogs = new ArrayList<>();
         for (Token token : PetriNet.getTokens()) {
