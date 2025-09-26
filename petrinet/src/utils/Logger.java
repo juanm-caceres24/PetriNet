@@ -22,7 +22,7 @@ public class Logger {
      */
 
     // File paths
-    private static String TRANSITIONS_FILE_PATH = "v2/petrinet/logs/transitions.txt";
+    private static String TRANSITIONS_FILE_PATH = "petrinet/logs/transitions.txt";
     // Variables to track simulation states, counters and statistics
     private static Long startTime;
     private static ArrayList<ArrayList<Integer>> transitionsByTokenLogs;
