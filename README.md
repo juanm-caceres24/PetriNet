@@ -1,1 +1,1 @@
-# Petri-Net
+# PetriNet
