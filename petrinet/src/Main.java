@@ -1,3 +1,8 @@
+/*
+ * SKRATCH PROJECT - PETRI NET SIMULATION
+ * Main class
+ */
+
 package petrinet.src;
 
 import petrinet.src.models.PetriNet;
