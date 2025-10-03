@@ -29,6 +29,7 @@ public class Logger {
     private static ArrayList<Integer> threadsCompletionCounters;
     private static ArrayList<ArrayList<Integer>> paths;
     private static ArrayList<Integer> pathsCounters;
+    private static Logger loggerInstance;
 
     /*
      * CONSTRUCTORS
@@ -241,4 +242,11 @@ public class Logger {
     public static final ArrayList<ArrayList<Integer>> getPaths() { return paths; }
 
     public static final ArrayList<Integer> getPathsCounters() { return pathsCounters; }
+
+    public static final Logger getLoggerInstance() {
+        if (loggerInstance == null) {
+            loggerInstance = new Logger();
+        }
+        return loggerInstance;
+    }
 }

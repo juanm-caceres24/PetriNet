@@ -11,6 +11,7 @@ public class Policy {
      */
     
     private static ArrayList<Float> probabilites;
+    private static Policy policyInstance;
 
     /*
      * CONSTRUCTORS
@@ -34,4 +35,11 @@ public class Policy {
      */
 
     public static final ArrayList<Float> getProbabilites() { return probabilites; }
+
+    public static final Policy getPolicyInstance() {
+        if (policyInstance == null) {
+            policyInstance = new Policy();
+        }
+        return policyInstance;
+    }
 }

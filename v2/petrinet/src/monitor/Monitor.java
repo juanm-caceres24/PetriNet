@@ -1,6 +1,5 @@
 package v2.petrinet.src.monitor;
 
-import v2.petrinet.src.Main;
 import v2.petrinet.src.Setup;
 import v2.petrinet.src.models.PetriNet;
 import v2.petrinet.src.models.Transition;
@@ -16,14 +15,15 @@ public class Monitor implements MonitorInterface {
      */
 
     // List of threads that are running the simulation and their states ('0'=stopped, '1'=running, '2'=stopping)
-    private static ArrayList<Thread> threads;
+    private static ArrayList<SimulationThread> simulationThreads;
+    private static Monitor monitorInstance;
 
     /*
      * CONSTRUCTORS
      */
 
-    public Monitor() {
-        threads = new ArrayList<>();
+    private Monitor() {
+        simulationThreads = new ArrayList<>();
         for (Integer i = 0; i < Setup.getThreadsQuantity(); i++) {
             ArrayList<Transition> transitions = new ArrayList<>();
             for (Integer j = 0; j < Setup.getTransitionsQuantity(); j++) {
@@ -34,11 +34,10 @@ public class Monitor implements MonitorInterface {
             Transition[] transitionLimits = new Transition[2];
             transitionLimits[0] = PetriNet.getTransitions().get(Setup.getThreadsTransitionLimitsMatrix()[i][0]);
             transitionLimits[1] = PetriNet.getTransitions().get(Setup.getThreadsTransitionLimitsMatrix()[i][1]);
-            threads.add(new Thread(new SimulationThread(
+            simulationThreads.add(new SimulationThread(
                     i,
                     transitions,
-                    transitionLimits,
-                    this)));
+                    transitionLimits));
         }
     }
 
@@ -48,14 +47,17 @@ public class Monitor implements MonitorInterface {
 
     @Override
     public final synchronized Boolean fireTransition(Integer transitionId) {
+        // Check if the transition is sensibilized (have the required tokens in the input places)
         if (PetriNet.getTransitions().get(transitionId).isSensibilized()) {
             Integer trackedTokenId = PetriNet.getTransitions().get(transitionId).fireTransition();
-            Segment segment = PetriNet.getSegments().stream()
-                    .filter(s -> s.getTransitions().contains(PetriNet.getTransitions().get(transitionId)))
+            // Get the thread that contains the fired transitions
+            SimulationThread thread = simulationThreads.stream()
+                    .filter(t -> t.getTransitions().contains(PetriNet.getTransitions().get(transitionId)))
                     .findFirst()
                     .orElse(null);
+            // Log the transition firing
             Logger.logTransitionFiring(
-                    segment,
+                    thread,
                     PetriNet.getTransitions().get(transitionId),
                     trackedTokenId,
                     true);
@@ -68,5 +70,10 @@ public class Monitor implements MonitorInterface {
      * GETTERS AND SETTERS
      */
 
-    // (none)
+    public static final Monitor getMonitorInstance() {
+        if (monitorInstance == null) {
+            monitorInstance = new Monitor();
+        }
+        return monitorInstance;
+    }
 }

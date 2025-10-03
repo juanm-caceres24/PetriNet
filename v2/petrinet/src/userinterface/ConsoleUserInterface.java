@@ -305,7 +305,7 @@ public class ConsoleUserInterface implements UserInterface {
 
     @Override
     public final void showThreadsCompletionCounters() {
-        System.out.println("Thread counters --------------------- | T0  | T1  | T2  | T3  | T4  | T5  |");
+        System.out.println("Thread counters ---------------------- | T0  | T1  | T2  | T3  | T4  | T5  |");
         System.out.print("                                       | ");
         for (int i = 0; i < Logger.getThreadsCompletionCounters().size(); i++) {
             System.out.printf(

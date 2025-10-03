@@ -3,6 +3,7 @@ package v2.petrinet.src;
 import java.util.ArrayList;
 
 import v2.petrinet.src.models.PetriNet;
+import v2.petrinet.src.models.Policy;
 import v2.petrinet.src.models.Transition;
 import v2.petrinet.src.monitor.Monitor;
 import v2.petrinet.src.threads.SimulationThread;
@@ -18,7 +19,6 @@ public class Main {
      */
 
     private static UserInterface userInterface;
-    private static Monitor monitor;
     private static ArrayList<SimulationThread> simulationThreads;
     
     /*
@@ -35,8 +35,11 @@ public class Main {
             case "1":
                 userInterface = new GraphicUserInterface();
         }
-        // Initialize the monitor
-        monitor = new Monitor();
+        // Initialize the petrinet, monitor, logger and policy singletons
+        PetriNet.getPetriNetInstance();
+        Policy.getPolicyInstance();
+        Monitor.getMonitorInstance();
+        Logger.getLoggerInstance();
         // Initialize the simulation threads
         Main.createSimulationThreads();
         // Selection of mode
@@ -131,8 +134,7 @@ public class Main {
             simulationThreads.add(new SimulationThread(
                     i,
                     threadTransitions,
-                    transitionLimits,
-                    monitor));
+                    transitionLimits));
         }
     }
 
@@ -141,8 +143,6 @@ public class Main {
      */
 
     public static final UserInterface getUserInterface() { return userInterface; }
-
-    public static final Monitor getMonitor() { return monitor; }
 
     public static final ArrayList<SimulationThread> getSimulationThreads() { return simulationThreads; }
 }

@@ -13,6 +13,7 @@ public class PetriNet {
     private static ArrayList<Token> tokens;
     private static ArrayList<Place> places;
     private static ArrayList<Transition> transitions;
+    private static PetriNet petriNetInstance;
 
     /*
      * CONSTRUCTORS
@@ -107,4 +108,11 @@ public class PetriNet {
     public static final ArrayList<Place> getPlaces() { return places; }
 
     public static final ArrayList<Transition> getTransitions() { return transitions; }
+
+    public static final PetriNet getPetriNetInstance() {
+        if (petriNetInstance == null) {
+            petriNetInstance = new PetriNet();
+        }
+        return petriNetInstance;
+    }
 }
