@@ -1,4 +1,4 @@
-package petrinet.src.models;
+package v1.petrinet.src.models;
 
 public class Token {
 

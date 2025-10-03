@@ -1,11 +1,11 @@
-package petrinet.src.monitor;
+package v1.petrinet.src.monitor;
 
-import petrinet.src.Main;
-import petrinet.src.models.PetriNet;
-import petrinet.src.models.Place;
-import petrinet.src.models.Segment;
-import petrinet.src.threads.SegmentThread;
-import petrinet.src.utils.Logger;
+import v1.petrinet.src.Main;
+import v1.petrinet.src.models.PetriNet;
+import v1.petrinet.src.models.Place;
+import v1.petrinet.src.models.Segment;
+import v1.petrinet.src.threads.SegmentThread;
+import v1.petrinet.src.utils.Logger;
 
 import java.util.ArrayList;
 

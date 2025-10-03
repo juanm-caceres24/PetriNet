@@ -1,4 +1,4 @@
-package petrinet.src.models;
+package v1.petrinet.src.models;
 
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;

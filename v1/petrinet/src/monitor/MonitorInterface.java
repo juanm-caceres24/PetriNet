@@ -1,4 +1,4 @@
-package petrinet.src.monitor;
+package v1.petrinet.src.monitor;
 
 public interface MonitorInterface {
 

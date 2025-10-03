@@ -1,4 +1,4 @@
-package petrinet.src;
+package v1.petrinet.src;
 
 public class Setup {
 

@@ -1,7 +1,7 @@
-package petrinet.src.models;
+package v1.petrinet.src.models;
 
-import petrinet.src.utils.Logger;
-import petrinet.src.Setup;
+import v1.petrinet.src.utils.Logger;
+import v1.petrinet.src.Setup;
 
 import java.util.ArrayList;
 

@@ -1,13 +1,13 @@
-package petrinet.src.userinterface;
+package v1.petrinet.src.userinterface;
 
-import petrinet.src.models.PetriNet;
-import petrinet.src.models.Place;
-import petrinet.src.models.Policy;
-import petrinet.src.models.Segment;
-import petrinet.src.models.Token;
-import petrinet.src.models.Transition;
-import petrinet.src.monitor.Monitor;
-import petrinet.src.utils.Logger;
+import v1.petrinet.src.models.PetriNet;
+import v1.petrinet.src.models.Place;
+import v1.petrinet.src.models.Policy;
+import v1.petrinet.src.models.Segment;
+import v1.petrinet.src.models.Token;
+import v1.petrinet.src.models.Transition;
+import v1.petrinet.src.monitor.Monitor;
+import v1.petrinet.src.utils.Logger;
 
 import java.util.Scanner;
 

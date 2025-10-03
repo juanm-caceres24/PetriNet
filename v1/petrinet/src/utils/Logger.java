@@ -1,12 +1,12 @@
-package petrinet.src.utils;
+package v1.petrinet.src.utils;
 
-import petrinet.src.Main;
-import petrinet.src.Setup;
-import petrinet.src.models.PetriNet;
-import petrinet.src.models.Place;
-import petrinet.src.models.Segment;
-import petrinet.src.models.Token;
-import petrinet.src.models.Transition;
+import v1.petrinet.src.Main;
+import v1.petrinet.src.Setup;
+import v1.petrinet.src.models.PetriNet;
+import v1.petrinet.src.models.Place;
+import v1.petrinet.src.models.Segment;
+import v1.petrinet.src.models.Token;
+import v1.petrinet.src.models.Transition;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -22,7 +22,7 @@ public class Logger {
      */
 
     // File paths
-    private static String TRANSITIONS_FILE_PATH = "petrinet/logs/transitions.txt";
+    private static String TRANSITIONS_FILE_PATH = "v1/petrinet/logs/transitions.txt";
     // Variables to track simulation states, counters and statistics
     private static Long startTime;
     private static ArrayList<ArrayList<Integer>> transitionsByTokenLogs;

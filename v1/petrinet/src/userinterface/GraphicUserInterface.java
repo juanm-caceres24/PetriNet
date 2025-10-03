@@ -1,6 +1,6 @@
-package petrinet.src.userinterface;
+package v1.petrinet.src.userinterface;
 
-import petrinet.src.models.Transition;
+import v1.petrinet.src.models.Transition;
 
 public class GraphicUserInterface implements UserInterface {
 

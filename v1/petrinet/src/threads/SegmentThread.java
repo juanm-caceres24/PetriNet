@@ -1,12 +1,12 @@
-package petrinet.src.threads;
+package v1.petrinet.src.threads;
 
-import petrinet.src.Setup;
-import petrinet.src.models.PetriNet;
-import petrinet.src.models.Policy;
-import petrinet.src.models.Segment;
-import petrinet.src.models.Transition;
-import petrinet.src.monitor.Monitor;
-import petrinet.src.utils.Logger;
+import v1.petrinet.src.Setup;
+import v1.petrinet.src.models.PetriNet;
+import v1.petrinet.src.models.Policy;
+import v1.petrinet.src.models.Segment;
+import v1.petrinet.src.models.Transition;
+import v1.petrinet.src.monitor.Monitor;
+import v1.petrinet.src.utils.Logger;
 
 public class SegmentThread implements Runnable {
 

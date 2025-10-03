@@ -1,12 +1,12 @@
-package petrinet.src;
+package v1.petrinet.src;
 
-import petrinet.src.models.PetriNet;
-import petrinet.src.models.Policy;
-import petrinet.src.monitor.Monitor;
-import petrinet.src.userinterface.ConsoleUserInterface;
-import petrinet.src.userinterface.GraphicUserInterface;
-import petrinet.src.userinterface.UserInterface;
-import petrinet.src.utils.Logger;
+import v1.petrinet.src.models.PetriNet;
+import v1.petrinet.src.models.Policy;
+import v1.petrinet.src.monitor.Monitor;
+import v1.petrinet.src.userinterface.ConsoleUserInterface;
+import v1.petrinet.src.userinterface.GraphicUserInterface;
+import v1.petrinet.src.userinterface.UserInterface;
+import v1.petrinet.src.utils.Logger;
 
 public class Main {
 
