@@ -38,10 +38,10 @@ public class SimulationThread extends Thread {
     @Override
     public final void run() {
         this.threadState = 1; // Set state to 'running'
-        while (this.threadState.equals(1) || this.threadState.equals(2)) {
+        while (this.threadState == 1) {
             for (Transition transition : transitions) {
                 Monitor.getMonitorInstance().fireTransition(transition.getTransitionId());
-                if (transition.equals(transitionLimits[1]) && this.threadState.equals(2)) {
+                if (transition.equals(transitionLimits[1]) && this.threadState == 2) {
                     break;
                 }
             }

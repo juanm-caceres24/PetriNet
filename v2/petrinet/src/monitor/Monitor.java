@@ -1,8 +1,8 @@
 package v2.petrinet.src.monitor;
 
+import v2.petrinet.src.Main;
 import v2.petrinet.src.Setup;
 import v2.petrinet.src.models.PetriNet;
-import v2.petrinet.src.models.Transition;
 import v2.petrinet.src.threads.SimulationThread;
 import v2.petrinet.src.utils.Logger;
 
@@ -23,22 +23,7 @@ public class Monitor implements MonitorInterface {
      */
 
     private Monitor() {
-        simulationThreads = new ArrayList<>();
-        for (Integer i = 0; i < Setup.getThreadsQuantity(); i++) {
-            ArrayList<Transition> transitions = new ArrayList<>();
-            for (Integer j = 0; j < Setup.getTransitionsQuantity(); j++) {
-                if (Setup.getThreadsTransitionsMatrix()[i][j] == 1) {
-                    transitions.add(PetriNet.getTransitions().get(j));
-                }
-            }
-            Transition[] transitionLimits = new Transition[2];
-            transitionLimits[0] = PetriNet.getTransitions().get(Setup.getThreadsTransitionLimitsMatrix()[i][0]);
-            transitionLimits[1] = PetriNet.getTransitions().get(Setup.getThreadsTransitionLimitsMatrix()[i][1]);
-            simulationThreads.add(new SimulationThread(
-                    i,
-                    transitions,
-                    transitionLimits));
-        }
+        simulationThreads = Main.getSimulationThreads();
     }
 
     /*
@@ -61,6 +46,12 @@ public class Monitor implements MonitorInterface {
                     PetriNet.getTransitions().get(transitionId),
                     trackedTokenId,
                     true);
+            // If some path complete the maximum thread completion counter, set all the threads to stopping state
+            if (Logger.getPathsCounters().contains(Setup.getMaxThreadCompletionCounter())) {
+                for (SimulationThread t : simulationThreads) {
+                    t.setThreadState(2);
+                }
+            }
             return true;
         }
         return false;

@@ -35,13 +35,12 @@ public class Main {
             case "1":
                 userInterface = new GraphicUserInterface();
         }
-        // Initialize the petrinet, monitor, logger and policy singletons
+        // Initialize the petrinet, threads, monitor, logger and policy singletons
         PetriNet.getPetriNetInstance();
+        Main.createSimulationThreads();
         Policy.getPolicyInstance();
         Monitor.getMonitorInstance();
         Logger.getLoggerInstance();
-        // Initialize the simulation threads
-        Main.createSimulationThreads();
         // Selection of mode
         switch (userInterface.requestModeSelection()) {
             case "0":
