@@ -1,7 +1,5 @@
 package v2.petrinet.src.userinterface;
 
-import java.util.ArrayList;
-
 import v2.petrinet.src.models.Transition;
 
 public class GraphicUserInterface implements UserInterface {
@@ -40,7 +38,7 @@ public class GraphicUserInterface implements UserInterface {
     public final void showPolicy() { }
 
     @Override
-    public final void showThreadsState(ArrayList<Integer> threadsState) { }
+    public final void showThreadsState() { }
 
     @Override
     public final void showTransitionFiring(

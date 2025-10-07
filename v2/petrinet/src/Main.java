@@ -94,10 +94,14 @@ public class Main {
                         // Fire the transition and save the ID of the tracked token, if any
                         Integer trackedTokenId = PetriNet.getTransitions().get(transitionId).fireTransition();
                         // Get the thread that contains the fired transitions
-                        SimulationThread thread = simulationThreads.stream()
-                                .filter(t -> t.getTransitions().contains(PetriNet.getTransitions().get(transitionId)))
-                                .findFirst()
-                                .orElse(null);
+                        SimulationThread thread = null;
+                        for (int i = 0; i < Setup.getThreadsQuantity(); i++) {
+                            if (Setup.getThreadsTransitionsMatrix()[i][transitionId] == 1) {
+                                thread = simulationThreads.get(i);
+                                break;
+                            }
+                        }
+                        // Log the transition firing
                         Logger.logTransitionFiring(
                                 thread,
                                 PetriNet.getTransitions().get(transitionId),

@@ -12,7 +12,8 @@ public class SimulationThread extends Thread {
      */
 
     private Integer threadId;
-    private Integer threadState; // '0'=stopped, '1'=running, '2'=stopping
+    // State of the thread: '0'=stopped, '1'=running
+    private Integer threadState;
     private ArrayList<Transition> transitions;
     private Transition[] transitionLimits;
 
@@ -37,16 +38,16 @@ public class SimulationThread extends Thread {
     
     @Override
     public final void run() {
-        this.threadState = 1; // Set state to 'running'
-        while (this.threadState == 1) {
+        // Set state to 'running'
+        this.threadState = 1;
+        while (true) {
             for (Transition transition : transitions) {
-                Monitor.getMonitorInstance().fireTransition(transition.getTransitionId());
-                if (transition.equals(transitionLimits[1]) && this.threadState == 2) {
-                    break;
+                if (threadState == 0) {
+                    return;
                 }
+                Monitor.getMonitorInstance().fireTransition(transition.getTransitionId());
             }
         }
-        this.threadState = 0; // Set state to 'stopping'
     }
 
     /*

@@ -95,11 +95,11 @@ public class Logger {
         Main.getUserInterface().showPolicy();
     }
 
-    public static final void logThreadsState(ArrayList<Integer> threadsState) {
-        Main.getUserInterface().showThreadsState(threadsState);
+    public static final synchronized void logThreadsState() {
+        Main.getUserInterface().showThreadsState();
     }
 
-    public static final void logTransitionFiring(
+    public static final synchronized void logTransitionFiring(
             SimulationThread thread,
             Transition transition,
             Integer trackedTokenId,
@@ -123,7 +123,7 @@ public class Logger {
             ArrayList<Integer> path = paths.get(i);
             // Check if the sequence of transitions of the token matches this path
             if (transitionsOfToken.size() >= path.size()) {
-                boolean completedPath = true;
+                Boolean completedPath = true;
                 // Check if the last 'path.size()' transitions match the path
                 for (int j = 0; j < path.size(); j++) {
                     if (!transitionsOfToken.get(transitionsOfToken.size() - path.size() + j).equals(path.get(j))) {
@@ -133,7 +133,9 @@ public class Logger {
                 }
                 if (completedPath) {
                     // Increment the counter for this path
-                    pathsCounters.set(i, pathsCounters.get(i) + 1);
+                    pathsCounters.set(
+                            i,
+                            pathsCounters.get(i) + 1);
                 }
             }
         }

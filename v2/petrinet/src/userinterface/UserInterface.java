@@ -1,7 +1,5 @@
 package v2.petrinet.src.userinterface;
 
-import java.util.ArrayList;
-
 import v2.petrinet.src.models.Transition;
 
 public interface UserInterface {
@@ -21,7 +19,7 @@ public interface UserInterface {
             Boolean showIsTracked);
     public abstract void showTransitions();
     public abstract void showPolicy();
-    public abstract void showThreadsState(ArrayList<Integer> threadsState);
+    public abstract void showThreadsState();
     public abstract void showTransitionFiring(
             Transition transition,
             Boolean showMinimal);

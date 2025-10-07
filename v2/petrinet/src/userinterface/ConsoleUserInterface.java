@@ -1,5 +1,6 @@
 package v2.petrinet.src.userinterface;
 
+import v2.petrinet.src.Main;
 import v2.petrinet.src.models.PetriNet;
 import v2.petrinet.src.models.Place;
 import v2.petrinet.src.models.Policy;
@@ -7,7 +8,6 @@ import v2.petrinet.src.models.Token;
 import v2.petrinet.src.models.Transition;
 import v2.petrinet.src.utils.Logger;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ConsoleUserInterface implements UserInterface {
@@ -184,13 +184,15 @@ public class ConsoleUserInterface implements UserInterface {
     }
 
     @Override
-    public final void showThreadsState(ArrayList<Integer> threadsState) {
-        System.out.println("=======================================|");
-        System.out.println(" THREADS STATE                         |");
-        System.out.println("=======================================|");
-        for (int i = 0; i < threadsState.size(); i++) {
-            System.out.println("Thread " + i + " ----------------------------- | " + threadsState.get(i));
+    public final void showThreadsState() {
+        System.out.println("Threads state ------------------------ | Th0 | Th1 | Th2 | Th3 | Th4 | Th5 |");
+        System.out.print("                                       | ");
+        for (int i = 0; i < Main.getSimulationThreads().size(); i++) {
+            System.out.printf(
+                    "%-4d| ",
+                    Main.getSimulationThreads().get(i).getThreadState());
         }
+        System.out.println();
     }
 
     @Override
@@ -209,6 +211,8 @@ public class ConsoleUserInterface implements UserInterface {
                 showMinimal,
                 false,
                 false);
+                
+        this.showThreadsState();
         this.showPaths(false);
     }
 
@@ -224,6 +228,7 @@ public class ConsoleUserInterface implements UserInterface {
                 true,
                 false,
                 false);
+        this.showThreadsState();
         this.showTransitionsByToken();
         this.showPaths(true);
     }
@@ -240,6 +245,7 @@ public class ConsoleUserInterface implements UserInterface {
                 true,
                 false,
                 false);
+        this.showThreadsState();
         this.showTransitionsByToken();
         this.showPaths(true);
     }

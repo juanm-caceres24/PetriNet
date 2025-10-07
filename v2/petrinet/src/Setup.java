@@ -130,7 +130,7 @@ public class Setup {
         1.00f  // Thread 5
     };
     */
-    private static final Integer MAX_THREAD_COMPLETION_COUNTER = 186;
+    private static final Integer MAX_THREAD_COMPLETION_COUNTER = 10;
     private static final Integer PLACES_QUANTITY = INCIDENCE_MATRIX.length;
     private static final Integer TRANSITIONS_QUANTITY = INCIDENCE_MATRIX[0].length;
     private static final Integer THREADS_QUANTITY = THREADS_TRANSITIONS_MATRIX.length;

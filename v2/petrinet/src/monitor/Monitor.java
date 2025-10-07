@@ -36,22 +36,25 @@ public class Monitor implements MonitorInterface {
         if (PetriNet.getTransitions().get(transitionId).isSensibilized()) {
             Integer trackedTokenId = PetriNet.getTransitions().get(transitionId).fireTransition();
             // Get the thread that contains the fired transitions
-            SimulationThread thread = simulationThreads.stream()
-                    .filter(t -> t.getTransitions().contains(PetriNet.getTransitions().get(transitionId)))
-                    .findFirst()
-                    .orElse(null);
+            SimulationThread thread = null;
+            for (int i = 0; i < Setup.getThreadsQuantity(); i++) {
+                if (Setup.getThreadsTransitionsMatrix()[i][transitionId] == 1) {
+                    thread = simulationThreads.get(i);
+                    break;
+                }
+            }
+            // If some path complete the maximum thread completion counter, set all the threads to stopped state
+            if (Logger.getPathsCounters().contains(Setup.getMaxThreadCompletionCounter())) {
+                for (SimulationThread t : simulationThreads) {
+                    t.setThreadState(0);
+                }
+            }
             // Log the transition firing
             Logger.logTransitionFiring(
                     thread,
                     PetriNet.getTransitions().get(transitionId),
                     trackedTokenId,
                     true);
-            // If some path complete the maximum thread completion counter, set all the threads to stopping state
-            if (Logger.getPathsCounters().contains(Setup.getMaxThreadCompletionCounter())) {
-                for (SimulationThread t : simulationThreads) {
-                    t.setThreadState(2);
-                }
-            }
             return true;
         }
         return false;
