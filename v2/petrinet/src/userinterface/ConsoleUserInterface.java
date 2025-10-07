@@ -84,6 +84,9 @@ public class ConsoleUserInterface implements UserInterface {
             case 2:
                 System.out.println("                                   >>> | ERROR: Transition cannot fire.");
                 break;
+            case 3:
+                System.out.println("                                   >>> | ERROR: Place invariant violated. Stopping simulation.");
+                break;
             default:
                 System.out.println("                                   >>> | ERROR: Unknown error.");
                 break;

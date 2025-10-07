@@ -99,6 +99,19 @@ public class PetriNet {
         }
     }
 
+    public static final Integer getPlaceInvariant() {
+        Integer totalTrackedTokens = 0;
+            for (Place place : PetriNet.getPlaces()) {
+                if (place.getIsTracked()) {
+                    totalTrackedTokens += place.getTokens().size();
+                }
+            }
+            if (totalTrackedTokens != Setup.getPlaceInvariant()) {
+                return -1;
+            }
+            return totalTrackedTokens;
+    }
+
     /*
      * GETTERS AND SETTERS
      */

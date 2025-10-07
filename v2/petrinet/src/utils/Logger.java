@@ -100,10 +100,8 @@ public class Logger {
     }
 
     public static final synchronized void logTransitionFiring(
-            SimulationThread thread,
             Transition transition,
-            Integer trackedTokenId,
-            Boolean logMinimal) {
+            Integer trackedTokenId) {
 
         // Add the transition to the list of transitions fired by the tracked token
         transitionsByTokenLogs.get(trackedTokenId).add(transition.getTransitionId());
@@ -111,6 +109,14 @@ public class Logger {
         transitionFireCounters.set(
                 transition.getTransitionId(),
                 transitionFireCounters.get(transition.getTransitionId()) + 1);
+        // Get the thread that contains the fired transitions
+        SimulationThread thread = null;
+        for (int i = 0; i < Setup.getThreadsQuantity(); i++) {
+            if (Setup.getThreadsTransitionsMatrix()[i][transition.getTransitionId()] == 1) {
+                thread = Main.getSimulationThreads().get(i);
+                break;
+            }
+        }
         // Increment the counter of the thread when fires the last transition of the thread
         if (transition == thread.getTransitionLimits()[1]) {
             threadsCompletionCounters.set(
@@ -146,7 +152,7 @@ public class Logger {
         // Show the transition firing
         Main.getUserInterface().showTransitionFiring(
                 transition,
-                logMinimal);
+                true);
     }
 
     public static final void logStartOfSimulation() {

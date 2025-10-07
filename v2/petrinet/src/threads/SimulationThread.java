@@ -42,10 +42,11 @@ public class SimulationThread extends Thread {
         this.threadState = 1;
         while (true) {
             for (Transition transition : transitions) {
-                if (threadState == 0) {
+                if (threadState == 1) {
+                    Monitor.getMonitorInstance().fireTransition(transition.getTransitionId());
+                } else {
                     return;
                 }
-                Monitor.getMonitorInstance().fireTransition(transition.getTransitionId());
             }
         }
     }

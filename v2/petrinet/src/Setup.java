@@ -134,6 +134,7 @@ public class Setup {
     private static final Integer PLACES_QUANTITY = INCIDENCE_MATRIX.length;
     private static final Integer TRANSITIONS_QUANTITY = INCIDENCE_MATRIX[0].length;
     private static final Integer THREADS_QUANTITY = THREADS_TRANSITIONS_MATRIX.length;
+    private static final Integer PLACE_INVARIANT = INITIAL_MARKING[0];
 
     /*
      * GETTERS AND SETTERS
@@ -162,4 +163,6 @@ public class Setup {
     public static final Integer getTransitionsQuantity() { return TRANSITIONS_QUANTITY; }
 
     public static final Integer getThreadsQuantity() { return THREADS_QUANTITY; }
+
+    public static final Integer getPlaceInvariant() { return PLACE_INVARIANT; }
 }

@@ -63,17 +63,7 @@ public class Main {
         Logger.setStartTime(System.currentTimeMillis());
         Logger.logStartOfSimulation();
         // Start simulation mode
-        for (SimulationThread thread : simulationThreads) {
-            thread.start();
-        }
-        // Wait for all segments to finish
-        for (SimulationThread thread : simulationThreads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        Main.startSimulationThreads();
         // Log end of simulation mode
         Logger.logEndOfSimulation();
     }
@@ -93,20 +83,20 @@ public class Main {
                     if (PetriNet.getTransitions().get(transitionId).isSensibilized()) {
                         // Fire the transition and save the ID of the tracked token, if any
                         Integer trackedTokenId = PetriNet.getTransitions().get(transitionId).fireTransition();
-                        // Get the thread that contains the fired transitions
-                        SimulationThread thread = null;
-                        for (int i = 0; i < Setup.getThreadsQuantity(); i++) {
-                            if (Setup.getThreadsTransitionsMatrix()[i][transitionId] == 1) {
-                                thread = simulationThreads.get(i);
-                                break;
-                            }
-                        }
                         // Log the transition firing
                         Logger.logTransitionFiring(
-                                thread,
                                 PetriNet.getTransitions().get(transitionId),
-                                trackedTokenId,
-                                true);
+                                trackedTokenId);
+                        // If some path complete the maximum thread completion counter, set all the threads to stopped state
+                        if (Logger.getPathsCounters().contains(Setup.getMaxThreadCompletionCounter())) {
+                            stopSimulationThreads();
+                        }
+                        // Check place invariants and stop the simulation if any invariant is violated
+                        if (PetriNet.getPlaceInvariant() == -1) {
+                            stopSimulationThreads();
+                            Main.getUserInterface().showErrorMessage(3);
+                            Main.getUserInterface().showEndOfSimulation();
+                        }
                     } else {
                         Main.getUserInterface().showErrorMessage(2);
                     }
@@ -138,6 +128,26 @@ public class Main {
                     i,
                     threadTransitions,
                     transitionLimits));
+        }
+    }
+
+    public static final void startSimulationThreads() {
+        for (SimulationThread thread : simulationThreads) {
+            thread.start();
+        }
+        // Wait for all segments to finish
+        for (SimulationThread thread : simulationThreads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static final void stopSimulationThreads() {
+        for (SimulationThread thread : simulationThreads) {
+            thread.setThreadState(0);
         }
     }
 
