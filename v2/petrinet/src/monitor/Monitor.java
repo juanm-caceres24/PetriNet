@@ -31,7 +31,7 @@ public class Monitor implements MonitorInterface {
         Transition transition = PetriNet.getTransitions().get(transitionId);
         if (transition.isSensibilized()) {
             // If the transition can fire (delay time is set to null), fire it
-            if (transition.canFire()) {
+            if (transition.getDelayTime() != null) {
                 // Fire the transition and save the ID of the tracked token, if any
                 Integer trackedTokenId = PetriNet.getTransitions().get(transitionId).fireTransition();
                 // Log the transition firing
@@ -50,7 +50,7 @@ public class Monitor implements MonitorInterface {
                 }
                 return true;
             } else {
-                // If the transition can't fire, randomize the transition delay time and put the thread in 'sleeping' state
+                // If the transition delay time is not set, randomize the transition delay time and put the thread in 'sleeping' state
                 transition.randomizeDelayTime();
                 for (int i = 0; i < Setup.getThreadsQuantity(); i++) {
                     if (Setup.getThreadsTransitionsMatrix()[i][transitionId] == 1) {

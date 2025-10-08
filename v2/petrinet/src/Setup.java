@@ -80,22 +80,23 @@ public class Setup {
         {  7,   8   }, // Thread 4
         {  11,  11  }  // Thread 5
     };
+    /*
     private static final Integer[][] DELAY_TIME_LIMITS_MATRIX = {
         // Min  Max
         {  0,   0   }, // T0
-        {  5,   40  }, // T1
+        {  10,  50  }, // T1
         {  0,   0   }, // T2
         {  0,   0   }, // T3
-        {  5,   40  }, // T4
-        {  5,   40  }, // T5
+        {  10,  50  }, // T4
+        {  10,  50  }, // T5
         {  0,   1   }, // T6
         {  0,   0   }, // T7
-        {  5,   40  }, // T8
-        {  5,   40  }, // T9
-        {  5,   40  }, // T10
+        {  10,  50  }, // T8
+        {  10,  50  }, // T9
+        {  10,  50  }, // T10
         {  0,   0   }  // T11
     };
-    /*
+    */
     private static final Integer[][] DELAY_TIME_LIMITS_MATRIX = {
         // Min  Max
         {  0,   0  }, // T0
@@ -111,7 +112,6 @@ public class Setup {
         {  0,   0  }, // T10
         {  0,   0  }  // T11
     };
-    */
     private static final Float[] PROBABILITIES = {
         1.00f, // Thread 0
         0.50f, // Thread 1

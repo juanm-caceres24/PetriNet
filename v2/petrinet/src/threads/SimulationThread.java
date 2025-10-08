@@ -48,15 +48,18 @@ public class SimulationThread extends Thread {
                 if (this.threadState == 0) {
                     return;
                 } else {
-                    // Fires the transition, but if it wasn't possible and the thread is in 'sleeping' state, sleep for the delay time of the transition
-                    Boolean isTransitionFired = Monitor.getMonitorInstance().fireTransition(transition.getTransitionId());
-                    if (!isTransitionFired && this.threadState == 2) {
+                    // Fires the transition
+                    Monitor.getMonitorInstance().fireTransition(transition.getTransitionId());
+                    // If the thread is in 'sleeping' state, sleep for the transition delay time and then set the thread state to 'running'
+                    if (this.threadState == 2) {
                         try {
                             Thread.sleep(transition.getDelayTime());
                             this.threadState = 1;
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+                        // After waking up, try to fire the transition again
+                        Monitor.getMonitorInstance().fireTransition(transition.getTransitionId());
                     }
                 }
             }
