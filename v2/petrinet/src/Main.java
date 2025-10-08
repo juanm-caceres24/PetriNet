@@ -61,17 +61,17 @@ public class Main {
     private static final void startSimulationMode() {
         // Log start of simulation mode
         Logger.setStartTime(System.currentTimeMillis());
-        Logger.logStartOfSimulation();
+        Main.getUserInterface().showStartOfSimulation();
         // Start simulation mode
         Main.startSimulationThreads();
         // Log end of simulation mode
-        Logger.logEndOfSimulation();
+        Main.getUserInterface().showEndOfSimulation();
     }
 
     private static final void startManualMode() {
         // Log start of manual mode
         Logger.setStartTime(System.currentTimeMillis());
-        Logger.logStartOfSimulation();
+        Main.getUserInterface().showStartOfSimulation();
         // Start manual mode
         while (true) {
             String input = Main.getUserInterface().requestTransitionToFire();
@@ -108,7 +108,7 @@ public class Main {
             }
         }
         // Log end of manual mode
-        Logger.logEndOfSimulation();
+        Main.getUserInterface().showEndOfSimulation();
     }
 
     private static final void createSimulationThreads() {

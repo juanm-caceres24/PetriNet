@@ -68,37 +68,6 @@ public class Logger {
      * METHODS
      */
 
-    public static final void logTokens() {
-        Main.getUserInterface().showTokens();
-    }
-
-    public static final void logPlaces(
-            Boolean logMinimal,
-            Boolean logTitle,
-            Boolean logIsTracked) {
-
-        Main.getUserInterface().showPlaces(
-                logMinimal,
-                logTitle,
-                logIsTracked);
-    }
-
-    public static final void logTransitions() {
-        Main.getUserInterface().showTransitions();
-    }
-
-    public static final void logPaths() {
-        Main.getUserInterface().showPaths(true);
-    }
-
-    public static final void logPolicy() {
-        Main.getUserInterface().showPolicy();
-    }
-
-    public static final synchronized void logThreadsState() {
-        Main.getUserInterface().showThreadsState();
-    }
-
     public static final synchronized void logTransitionFiring(
             Transition transition,
             Integer trackedTokenId) {
@@ -153,30 +122,6 @@ public class Logger {
         Main.getUserInterface().showTransitionFiring(
                 transition,
                 true);
-    }
-
-    public static final void logStartOfSimulation() {
-        Main.getUserInterface().showStartOfSimulation();
-    }
-
-    public static final void logEndOfSimulation() {
-        Main.getUserInterface().showEndOfSimulation();
-    }
-
-    public static final void logElapsedTime() {
-        Main.getUserInterface().showElapsedTime();
-    }
-
-    public static final void logTransitionsByToken() {
-        Main.getUserInterface().showTransitionsByToken();
-    }
-
-    public static final void logTransitionFireCounters() {
-        Main.getUserInterface().showTransitionsFireCounters();
-    }
-
-    public static final void logThreadCompletionCounters() {
-        Main.getUserInterface().showThreadsCompletionCounters();
     }
 
     private static final void initializePaths() {

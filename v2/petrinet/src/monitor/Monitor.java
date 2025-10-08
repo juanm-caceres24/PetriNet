@@ -18,8 +18,7 @@ public class Monitor implements MonitorInterface {
      * CONSTRUCTORS
      */
 
-    private Monitor() {
-    }
+    private Monitor() { }
 
     /*
      * METHODS
