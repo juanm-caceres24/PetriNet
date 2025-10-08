@@ -30,7 +30,7 @@ public class Transition {
         this.inputPlaces = inputPlaces;
         this.outputPlaces = outputPlaces;
         this.delayTimeLimits = delayTimeLimits;
-        delayTime = System.currentTimeMillis();
+        delayTime = null;
     }
 
     /*
@@ -73,8 +73,8 @@ public class Transition {
     }
 
     public Boolean canFire() {
-        // Checks if the transition can fire (is sensibilized and delay time has passed)
-        if (isSensibilized() && (System.currentTimeMillis() >= delayTime)) {
+        // Checks if the transition can fire (is sensibilized and have the delay time set)
+        if (isSensibilized() && delayTime != null) {
             return true;
         }
         return false;
@@ -82,7 +82,7 @@ public class Transition {
 
     public void randomizeDelayTime() {
         // Randomizes the delay time and sets the waiting flag to true
-        delayTime = System.currentTimeMillis() + (long) (Math.random() * (delayTimeLimits[1] - delayTimeLimits[0] + 1) + delayTimeLimits[0]);
+        delayTime = (long) (Math.random() * (delayTimeLimits[1] - delayTimeLimits[0] + 1) + delayTimeLimits[0]);
     }
 
     /*

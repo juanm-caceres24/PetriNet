@@ -12,7 +12,7 @@ public class SimulationThread extends Thread {
      */
 
     private Integer threadId;
-    // State of the thread: '0'=stopped, '1'=running
+    // State of the thread: '0'=stopped, '1'=running, '2'=sleeping
     private Integer threadState;
     private ArrayList<Transition> transitions;
     private Transition[] transitionLimits;
@@ -40,12 +40,24 @@ public class SimulationThread extends Thread {
     public final void run() {
         // Set state to 'running'
         this.threadState = 1;
+        // Main loop
         while (true) {
+            // Iterate over all transitions
             for (Transition transition : transitions) {
-                if (threadState == 1) {
-                    Monitor.getMonitorInstance().fireTransition(transition.getTransitionId());
-                } else {
+                // If the thread is stopped, exit the method
+                if (this.threadState == 0) {
                     return;
+                } else {
+                    // Fires the transition, but if it wasn't possible and the thread is in 'sleeping' state, sleep for the delay time of the transition
+                    Boolean isTransitionFired = Monitor.getMonitorInstance().fireTransition(transition.getTransitionId());
+                    if (!isTransitionFired && this.threadState == 2) {
+                        try {
+                            Thread.sleep(transition.getDelayTime());
+                            this.threadState = 1;
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         }
