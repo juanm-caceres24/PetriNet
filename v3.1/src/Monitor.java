@@ -4,9 +4,9 @@ public class Monitor implements MonitorInterface {
 
     /*
      * The main mutex semaphore to guarantee mutual exclusion. 
-     * Initialized to 1, meaning the monitor is free.
+     * Initialized to 1, meaning the monitor is free and with fairness to ensure that threads will acquire in order.
      */
-    private Semaphore mutex;
+    private final Semaphore mutex = new Semaphore(1, true);
 
     /*
      * An array of private semaphores. Each transition has its own semaphore initialized to 0.
@@ -20,18 +20,19 @@ public class Monitor implements MonitorInterface {
     private int[] waitingCount;
 
     private PetriNet petriNet;
-    private Politic politic;
+    private PolicyInterface policy;
 
-    public Monitor(PetriNet petriNet, Politic politic) {
+    // private int t4EligibleCount = 0;
+
+    public Monitor(PetriNet petriNet, PolicyInterface policy) {
         this.petriNet = petriNet;
-        this.politic = politic;
-        // Initialize mutex to 1 (available) with fairness (true)
-        mutex = new Semaphore(1, true); 
+        this.policy = policy;
         int numTransitions = petriNet.getIncidenceMatrix()[0].length;
         waitingThreads = new Semaphore[numTransitions];
         waitingCount = new int[numTransitions];
+
+        // Initialize each private queue to 0 to use it as a blocking point.
         for (int i = 0; i < numTransitions; i++) {
-            // Initialize each private queue to 0 (blocking)
             waitingThreads[i] = new Semaphore(0, true);
             waitingCount[i] = 0;
         }
@@ -39,43 +40,50 @@ public class Monitor implements MonitorInterface {
 
     @Override
     public boolean fireTransition(int transition) {
-        // Try to acquire the main lock to enter the monitor
+
+        // Try to acquire the main lock to enter the monitor.
         try {
             mutex.acquire();
         } catch (InterruptedException e) {
             //e.printStackTrace();
             return false;
         }
-        // Try to execute he main loop of the monitor.
+
+        // We are now inside the monitor, we have the lock. We will try to fire the transition.
         boolean k = true;
         while (k) {
-            k = petriNet.fireTransition(transition);
+            k = petriNet.fireTransition(transition, mutex);
             if (k) {
-                boolean[] vs = petriNet.getSensitizedTransitions();
+
+                // Realize the m=vs&vc operation to check if there are any enabled transitions with waiting threads, and if there are, wake up one of them based on the policy.
+                boolean[] vs = petriNet.getSensitizedTransitionsByMarking();
                 boolean[] vc = getWaitingTransitions();
                 boolean[] m = compareArrays(vs, vc);
                 if (containsTrue(m)) {
-                    int transitionToFire = politic.selectTransition(m);
-                    // We wake up the sleeping thread by releasing ITS private semaphore. Passing the Baton: We do NOT release the main 'mutex' here. The awakened thread will inherit the lock and continue executing inside the monitor, without needing to acquire the 'mutex' again.
+                    //if (m[4]) t4EligibleCount++;
+                    int transitionToFire = policy.selectTransition(m);
                     waitingThreads[transitionToFire].release();
-                    // We exit the method WITHOUT releasing the main 'mutex'. The awakened thread inherits the lock automatically.
                     return true;
+
+                // If there are no threads to wake up, we just exit the loop.
                 } else {
-                    // No one to wake up, we just exit the loop.
                     k = false;
                 }
+            
+            // If the transition is not enabled, it goes to sleep. Increment the waiter count for this transition and release the main 'mutex' before going to sleep.
             } else {
-                // Transition not enabled. We must go to sleep. Increment the waiter count for this transition.
                 waitingCount[transition]++;
-                // We release the main door so other threads can enter the monitor.
                 mutex.release();
+
+                // We go to sleep on our private semaphore. Waiting to be woken up by another thread.
                 try {
-                    // We go to sleep on our private semaphore.
                     waitingThreads[transition].acquire();
-                    // HERE WAKES UP THE THREAD. We decrement the waiter count for this transition.
+                    
+                    // HERE WAKES UP A SLEEPING THREAD. We decrement the waiter count for this transition and set k=true to iterate again.
                     waitingCount[transition]--;
-                    // Loop again to try firing.
                     k = true;
+
+                // If the thread was interrupted while waiting, we consider that the segment has reached the maximum number of iterations and we stop it.
                 } catch (InterruptedException e) {
                     //e.printStackTrace();
                     waitingCount[transition]--;
@@ -83,29 +91,41 @@ public class Monitor implements MonitorInterface {
                 }
             }
         }
-        // This release is ONLY executed if the thread is leaving the monitor without waking anyone else up (when k = false).
+
+        // This release is ONLY executed if the thread is leaving the monitor without waking anyone else up (when k=false).
         mutex.release();
         return true;
     }
 
+    /*
+     * Returns an array of booleans indicating which transitions have waiting threads.
+     */
     private boolean[] getWaitingTransitions() {
         boolean[] output = new boolean[waitingCount.length];
         for (int i = 0; i < waitingCount.length; i++) {
-            // If the count is greater than 0, there is at least one thread waiting
             output[i] = (waitingCount[i] > 0);
         }
+
         return output;
     }
 
+    /*
+     * Compares two arrays of booleans and returns a new array with the result of the comparison.
+     */
     private boolean[] compareArrays(boolean[] array_a, boolean[] array_b) {
         boolean[] output = new boolean[array_a.length];
-        // Make the list 'output' by comparing the 'array_a' and 'array_b'. If a transition is enabled to fire and has waiting threads, add 'true' to 'output', otherwise add 'false' to 'output'.
         for (int i = 0; i < array_a.length; i++) {
             output[i] = (array_a[i] && array_b[i]);
         }
+
         return output;
     }
 
+    //public int getT4EligibleCount() { return t4EligibleCount; }
+
+    /*
+     * Checks if an array of booleans contains at least one true value.
+     */
     private boolean containsTrue(boolean[] array) {
         for (boolean valor : array) {
             if (valor) return true;
