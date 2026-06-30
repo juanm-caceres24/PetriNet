@@ -32,12 +32,7 @@ public class PetriNet {
         this.maxInvariants = maxInvariants;
         this.logger = logger;
         this.transitionCounters = new int[incidenceMatrix[0].length];
-        
-        // Inicializa el arreglo de tiempos
         this.timeStamps = new long[incidenceMatrix[0].length];
-        
-        // Setea el timeStamp inicial (ahora) para las transiciones
-        // que ya están sensibilizadas por tokens al arrancar la red.
         boolean[] initialSensitized = getSensitizedTransitionsByMarking();
         long now = System.currentTimeMillis();
         for (int i = 0; i < initialSensitized.length; i++) {
@@ -49,48 +44,48 @@ public class PetriNet {
 
     public int fireTransition(int transition) {
 
+        // If he transition has already reached the maximum number of firings, we return -1 to indicate that it cannot be fired anymore.
         if (transitionCounters[transition] >= maxInvariants) {
             return -1;
         }
         
-        // 1. Verificamos si hay tokens. Si no hay, devolvemos -1.
+        // If the transition is not enabled y tokens, we return -1 to indicate that it cannot be fired.
         if (!getSensitizedTransitionsByMarking()[transition]) {
             return -1; 
         }
 
+        // Calculate the time to wait for the transition to be fired based on its alpha value and the last time it was fired.
         long currentTime = System.currentTimeMillis();
         long timeToWait = (timeStamps[transition] + alphas[transition]) - currentTime;
 
-        // 2. Verificamos el tiempo. Si falta tiempo, devolvemos los ms que faltan.
+        // If the transition is enabled but the required time has not yet passed, we return the remaining time to wait.
         if (timeToWait > 0) {
-            return (int) timeToWait; 
+            return (int) timeToWait;
         }
 
-        // 3. Hay tokens y se cumplió el tiempo. Disparamos.
+        // If the transition is enabled and the required time has passed, we proceed to fire the transition by updating the marking.
         boolean[] sensitizedBefore = getSensitizedTransitionsByMarking();
-
-        // Aplicamos el disparo modificando el marcado
         for (int i = 0; i < marking.length; i++) {
             marking[i] += incidenceMatrix[i][transition];
         }
 
-        // Verificamos que se cumplan los invariantes en cada transición
+        // Check if the place invariants are still satisfied after firing the transition. If not, throw an exception.
         verifyPlaceInvariants();
 
-        // Guardamos quién está sensibilizado después del disparo
+        // Update timeStamps for transitions that are now sensitized after firing the transition. Only update timeStamps for transitions that are now sensitized and were not sensitized before.
         boolean[] sensitizedAfter = getSensitizedTransitionsByMarking();
         long now = System.currentTimeMillis();
-        
         for (int j = 0; j < sensitizedAfter.length; j++) {
             if (sensitizedAfter[j] && (!sensitizedBefore[j] || j == transition)) {
                 timeStamps[j] = now;
             }
         }
 
+        // Increment the counter for the fired transition and log the firing of the transition.
         transitionCounters[transition]++;
         logger.logTransitionFiring(transition, marking, transitionCounters);
         
-        // Retornamos 0 indicando disparo exitoso.
+        // Return 0 to indicate that the transition was fired successfully.
         return 0;
     }
 

@@ -51,9 +51,9 @@ public class Monitor implements MonitorInterface {
         boolean k = true;
         while (k) {
             int status = petriNet.fireTransition(transition);
-            if (status == 0) {
 
-                // Realize the m=vs&vc operation to check if there are any enabled transitions with waiting threads, and if there are, wake up one of them based on the policy.
+            // If the transition was fired successfully, we check if there are any waiting threads for enabled transitions. If there are, we wake up one of them based on the policy.
+            if (status == 0) {
                 boolean[] vs = petriNet.getSensitizedTransitionsByMarking();
                 boolean[] vc = getWaitingTransitions();
                 boolean[] m = compareArrays(vs, vc);
@@ -86,10 +86,14 @@ public class Monitor implements MonitorInterface {
                     waitingCount[transition]--;
                     return false;
                 }
+
+            // If 'status > 0', the transition is not enabled and the thread needs to wait that amount of time, so release the 'mutex' and then sleep.
             } else if (status > 0) {
                 mutex.release();
                 try {
                     Thread.sleep(status);
+
+                    // HERE WAKES UP A SLEEPING THREAD. We try to acquire the main lock again to enter the monitor and iterate again.
                     mutex.acquire();
                     k = true;
                 } catch (InterruptedException e) {
@@ -125,9 +129,7 @@ public class Monitor implements MonitorInterface {
         }
         return output;
     }
-
-    //public int getT4EligibleCount() { return t4EligibleCount; }
-
+    
     /*
      * Checks if an array of booleans contains at least one true value.
      */
