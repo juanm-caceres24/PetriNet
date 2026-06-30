@@ -1,7 +1,7 @@
 public class PetriNet {
 
-    //                                         P0   P1   P2   P3   P4   P5   P6   P7   P8   P9
-    private final int[] marking = new int[] {   3,   0,   0,   0,   0,   0,   0,   1,   1,   0 };
+    //                                        P0  P1  P2  P3  P4  P5  P6  P7  P8  P9
+    private final int[] marking = new int[] {  8,  0,  0,  0,  0,  0,  0,  3,  3,  0 };
 
     //                                                      T0  T1  T2  T3  T4  T5  T6  T7  T8  T9
     private final int[][] incidenceMatrix = new int[][] { { -1,  0,  0,  0,  0,  0,  0,  0,  0,  1 },   // P0
@@ -15,13 +15,13 @@ public class PetriNet {
                                                           {  0,  0,  0,  0, -1,  1, -1,  0,  1,  0 },   // P8
                                                           {  0,  0,  0,  1,  0,  1,  0,  0,  1, -1 } }; // P9;
 
-    //                                          T0   T1   T2   T3   T4   T5   T6   T7   T8   T9
-    private final long[] alphas = new long[] {   0,   0, 100,  80,   0, 400,   0, 200, 160,   0 };
+    //                                         T0  T1  T2  T3  T4  T5  T6  T7  T8  T9
+    private final long[] alphas = new long[] {  0,  0, 10, 80,  0, 40,  0, 20, 16,  0 };
 
     //                                             Total    PlacesInvariants
-    private final int[][][] placeInvariants = { { {  3  }, { 0, 1, 2, 3, 4, 5, 6, 9 } },   // Pi0
-                                                { {  1  }, { 2, 3, 4, 7             } },   // Pi1
-                                                { {  1  }, { 4, 5, 6, 8             } } }; // Pi2
+    private final int[][][] placeInvariants = { { {  8  }, { 0, 1, 2, 3, 4, 5, 6, 9 } },   // Pi0
+                                                { {  3  }, { 2, 3, 4, 7             } },   // Pi1
+                                                { {  3  }, { 4, 5, 6, 8             } } }; // Pi2
 
     private long[] timeStamps;
     private int maxInvariants;

@@ -6,7 +6,7 @@ public class Main {
     /*
      * The maximum number of times a transition can be fired before the program ends (transition invariants).
      */
-    private static final int MAX_INVARIANTS = 200;
+    private static final int MAX_INVARIANTS = 1000;
 
     /*
      * Each row indicates the segments to be created.
@@ -15,16 +15,16 @@ public class Main {
      */
     //                                                   qSegments    Transitions
     private static final int[][][] SEGMENTS_SETUP = { { { 3       }, { 0         } },   // Segment A (first)
-                                                      { { 1       }, { 1, 2, 3   } },   // Segment B
-                                                      { { 1       }, { 4, 5      } },   // Segment C
-                                                      { { 1       }, { 6, 7, 8   } },   // Segment D
+                                                      { { 2       }, { 1, 2, 3   } },   // Segment B
+                                                      { { 2       }, { 4, 5      } },   // Segment C
+                                                      { { 2       }, { 6, 7, 8   } },   // Segment D
                                                       { { 3       }, { 9         } } }; // Segment E (last)
 
     public static void main(String[] args) {
         Logger logger = new Logger();
         PetriNet petriNet = new PetriNet(MAX_INVARIANTS, logger);
-        //PolicyInterface policy = new PrioritizedPolicy();
-        PolicyInterface policy = new RandomPolicy();
+        PolicyInterface policy = new PrioritizedPolicy();
+        //PolicyInterface policy = new RandomPolicy();
         MonitorInterface monitor = new Monitor(petriNet, policy);
 
         // Create the segments based on the SEGMENTS_SETUP configuration and the transitions of the petri net.
@@ -53,7 +53,7 @@ public class Main {
         while (lastTransitionCounter < MAX_INVARIANTS) {
             lastTransitionCounter = petriNet.getTransitionCounters()[lastTransitionCounterIndex];
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -80,5 +80,6 @@ public class Main {
         
         // Print the final counters for each transition.
         System.out.printf("THREAD-Main: Final counters: %s\n", Arrays.toString(petriNet.getTransitionCounters()));
+        System.out.printf("THREAD-Main: Elapsed time: %d [ms]\n", System.currentTimeMillis() - logger.getStartingTime());
     }
 }
