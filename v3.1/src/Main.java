@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Main {
 
@@ -36,9 +35,6 @@ public class Main {
             }
         }
         //System.out.printf("THREAD-Main: Created %d segments.\n", segments.size());
-
-        long startTime = System.currentTimeMillis();
-
 
         // Create a thread for each segment and start all of them.
         ArrayList<Thread> threads = new ArrayList<>();
@@ -82,19 +78,15 @@ public class Main {
         //System.out.printf("THREAD-Main: All threads have finished.\n");
         
         // Print the final counters for the transitions of interest.
-        int[] counters   = petriNet.getTransitionCounters();
-        int creditCard   = counters[1]; // T1
-        int highRisk     = counters[4]; // T4
-        int bankTransfer = counters[6]; // T6
-
-        //int t4Eligible = ((Monitor) monitor).getT4EligibleCount();
-
+        int[] counters = petriNet.getTransitionCounters();
+        int creditCard = counters[1];
+        int highRisk = counters[4];
+        int bankTransfer = counters[6];
         System.out.printf("Credit/Debit:    %d%n", creditCard);
         System.out.printf("High-Risk:       %d%n", highRisk);
         System.out.printf("Bank Transfer:   %d%n", bankTransfer);
         System.out.printf("Total:           %d / %d%n", creditCard + highRisk + bankTransfer, MAX_INVARIANTS);
-        //System.out.printf("T4 eligible (politica podia elegirla): %d%n", t4Eligible);
-        long elapsed = System.currentTimeMillis() - startTime;
+        long elapsed = System.currentTimeMillis() - logger.getStartingTime();
         System.out.printf("Tiempo total de ejecución: %.2f s%n", elapsed / 1000.0);
     }
 }

@@ -22,8 +22,6 @@ public class Monitor implements MonitorInterface {
     private PetriNet petriNet;
     private PolicyInterface policy;
 
-    // private int t4EligibleCount = 0;
-
     public Monitor(PetriNet petriNet, PolicyInterface policy) {
         this.petriNet = petriNet;
         this.policy = policy;
@@ -52,15 +50,14 @@ public class Monitor implements MonitorInterface {
         // We are now inside the monitor, we have the lock. We will try to fire the transition.
         boolean k = true;
         while (k) {
-            k = petriNet.fireTransition(transition, mutex);
-            if (k) {
+            int status = petriNet.fireTransition(transition);
+            if (status == 0) {
 
                 // Realize the m=vs&vc operation to check if there are any enabled transitions with waiting threads, and if there are, wake up one of them based on the policy.
                 boolean[] vs = petriNet.getSensitizedTransitionsByMarking();
                 boolean[] vc = getWaitingTransitions();
                 boolean[] m = compareArrays(vs, vc);
                 if (containsTrue(m)) {
-                    //if (m[4]) t4EligibleCount++;
                     int transitionToFire = policy.selectTransition(m);
                     waitingThreads[transitionToFire].release();
                     return true;
@@ -71,7 +68,7 @@ public class Monitor implements MonitorInterface {
                 }
             
             // If the transition is not enabled, it goes to sleep. Increment the waiter count for this transition and release the main 'mutex' before going to sleep.
-            } else {
+            } else if (status == -1) {
                 waitingCount[transition]++;
                 mutex.release();
 
@@ -87,6 +84,16 @@ public class Monitor implements MonitorInterface {
                 } catch (InterruptedException e) {
                     //e.printStackTrace();
                     waitingCount[transition]--;
+                    return false;
+                }
+            } else if (status > 0) {
+                mutex.release();
+                try {
+                    Thread.sleep(status);
+                    mutex.acquire();
+                    k = true;
+                } catch (InterruptedException e) {
+                    //e.printStackTrace();
                     return false;
                 }
             }
@@ -105,7 +112,6 @@ public class Monitor implements MonitorInterface {
         for (int i = 0; i < waitingCount.length; i++) {
             output[i] = (waitingCount[i] > 0);
         }
-
         return output;
     }
 
@@ -117,7 +123,6 @@ public class Monitor implements MonitorInterface {
         for (int i = 0; i < array_a.length; i++) {
             output[i] = (array_a[i] && array_b[i]);
         }
-
         return output;
     }
 
