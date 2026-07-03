@@ -6,7 +6,7 @@ public class Main {
     /*
      * The maximum number of times a transition can be fired before the program ends (transition invariants).
      */
-    private static final int MAX_INVARIANTS = 1000;
+    private static final int MAX_INVARIANTS = 100;
 
     /*
      * Each row indicates the segments to be created.
